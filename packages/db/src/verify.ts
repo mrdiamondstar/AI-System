@@ -42,6 +42,16 @@ async function main() {
   });
   if (orphans > 0) failures.push(`${orphans} published entities lack a primary category`);
 
+  // Admin/editorial actor exists (drives admin + moderation surfaces)
+  const editor = await prisma.user.count({ where: { role: "ADMIN" } });
+  if (editor < 1) failures.push("expected at least one ADMIN user from seed");
+
+  // Comparison-pair generation produces meaningful pairs (programmatic SEO)
+  const pairSample = await prisma.entity.count({
+    where: { status: "PUBLISHED", categories: { some: { isPrimary: true } } },
+  });
+  if (pairSample < 2) failures.push("not enough categorized entities for comparison pages");
+
   if (failures.length > 0) {
     console.error("DB verification FAILED:\n - " + failures.join("\n - "));
     process.exitCode = 1;

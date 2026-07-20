@@ -371,8 +371,16 @@ async function main() {
     }
   }
 
+  // Editorial seed user (dev/CI only). Real accounts are created via Better
+  // Auth; this exists so the admin surface and moderation flows have an actor.
+  await prisma.user.upsert({
+    where: { email: "editor@dstarix.local" },
+    update: { role: "ADMIN" },
+    create: { email: "editor@dstarix.local", name: "DStarix Editor", role: "ADMIN" },
+  });
+
   console.log(
-    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities.`,
+    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 1 editor.`,
   );
 }
 
