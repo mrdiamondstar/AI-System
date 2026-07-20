@@ -9,6 +9,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dstarix/catalog": "workspace:*",
+    "@dstarix/growth": "workspace:*",
+    "@dstarix/seo": "workspace:*",
     "@dstarix/shared": "workspace:*",
     "@dstarix/ui": "workspace:*",
     "next": "^15.5.4",

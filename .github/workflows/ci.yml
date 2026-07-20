@@ -39,3 +39,46 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  # Real-database verification: migrations, seed, FTS/trigram search, and
+  # relational integrity against Postgres 17 + pgvector (doc 08 §7).
+  db-verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: dstarix
+          POSTGRES_PASSWORD: dstarix_ci
+          POSTGRES_DB: dstarix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dstarix"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://dstarix:dstarix_ci@localhost:5432/dstarix
+      DIRECT_DATABASE_URL: postgresql://dstarix:dstarix_ci@localhost:5432/dstarix
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations
+        run: pnpm --filter @dstarix/db db:deploy
+
+      - name: Seed
+        run: pnpm db:seed
+
+      - name: Verify schema, seed, and search
+        run: pnpm --filter @dstarix/db db:verify

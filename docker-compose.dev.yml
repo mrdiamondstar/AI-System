@@ -1,0 +1,23 @@
+# Local development infrastructure only — production uses managed services
+# (Neon Postgres, Upstash Redis; doc 08 §8). Start with:
+#   docker compose -f docker-compose.dev.yml up -d
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: dstarix-postgres
+    environment:
+      POSTGRES_USER: dstarix
+      POSTGRES_PASSWORD: dstarix_dev
+      POSTGRES_DB: dstarix
+    ports:
+      - "5433:5432"
+    volumes:
+      - dstarix_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dstarix"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  dstarix_pgdata:

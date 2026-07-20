@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@dstarix/ui", "@dstarix/shared"],
+  transpilePackages: [
+    "@dstarix/ui",
+    "@dstarix/shared",
+    "@dstarix/catalog",
+    "@dstarix/growth",
+    "@dstarix/seo",
+    "@dstarix/db",
+  ],
   poweredByHeader: false,
   async headers() {
     return [
