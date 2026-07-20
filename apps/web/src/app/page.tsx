@@ -43,6 +43,9 @@ export default async function HomePage() {
             <Link href="/search" className="text-muted-foreground hover:text-foreground">
               Search
             </Link>
+            <Link href="/login" className="font-medium hover:text-brand">
+              Sign in
+            </Link>
           </div>
         </nav>
       </header>

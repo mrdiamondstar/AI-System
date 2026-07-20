@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     "@dstarix/growth",
     "@dstarix/seo",
     "@dstarix/db",
+    "@dstarix/identity",
   ],
   poweredByHeader: false,
   async headers() {

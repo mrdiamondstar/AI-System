@@ -11,6 +11,9 @@
   "dependencies": {
     "@dstarix/catalog": "workspace:*",
     "@dstarix/growth": "workspace:*",
+    "@dstarix/identity": "workspace:*",
+    "better-auth": "^1.3.0",
+    "server-only": "^0.0.1",
     "@dstarix/seo": "workspace:*",
     "@dstarix/shared": "workspace:*",
     "@dstarix/ui": "workspace:*",
