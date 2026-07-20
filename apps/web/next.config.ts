@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     "@dstarix/engagement",
     "@dstarix/advisor",
     "@dstarix/ai-gateway",
+    "@dstarix/learning",
+    "@dstarix/jobs",
   ],
   poweredByHeader: false,
   async headers() {

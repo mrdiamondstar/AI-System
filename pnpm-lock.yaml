@@ -44,6 +44,12 @@ importers:
       '@dstarix/identity':
         specifier: workspace:*
         version: link:../../packages/modules/identity
+      '@dstarix/jobs':
+        specifier: workspace:*
+        version: link:../../packages/modules/jobs
+      '@dstarix/learning':
+        specifier: workspace:*
+        version: link:../../packages/modules/learning
       '@dstarix/seo':
         specifier: workspace:*
         version: link:../../packages/seo
@@ -270,6 +276,32 @@ importers:
       better-auth:
         specifier: ^1.3.0
         version: 1.6.23(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3))(next@15.5.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(pg@8.22.0)(prisma@6.19.3(typescript@5.9.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/jobs:
+    dependencies:
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/learning:
+    dependencies:
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

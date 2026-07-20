@@ -52,6 +52,17 @@ async function main() {
   });
   if (pairSample < 2) failures.push("not enough categorized entities for comparison pages");
 
+  // Ecosystem surfaces: collections, Learn, Careers seeded and published
+  const collections = await prisma.collection.count({ where: { status: "PUBLISHED" } });
+  if (collections < 1) failures.push("expected at least one published collection");
+
+  const courses = await prisma.course.count({ where: { status: "PUBLISHED" } });
+  const lessons = await prisma.lesson.count();
+  if (courses < 1 || lessons < 1) failures.push("expected published courses with lessons");
+
+  const jobs = await prisma.job.count({ where: { status: "PUBLISHED" } });
+  if (jobs < 1) failures.push("expected at least one published job");
+
   if (failures.length > 0) {
     console.error("DB verification FAILED:\n - " + failures.join("\n - "));
     process.exitCode = 1;

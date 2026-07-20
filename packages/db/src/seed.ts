@@ -430,8 +430,153 @@ async function main() {
     });
   }
 
+  // DStarix Learn — courses + lessons
+  const learnCourses = [
+    {
+      slug: "getting-started-with-ai-tools",
+      title: "Getting Started with AI Tools",
+      summary: "A practical intro to choosing and using AI tools for everyday work.",
+      topic: "AI",
+      level: "BEGINNER" as const,
+      lessons: [
+        {
+          slug: "what-are-ai-tools",
+          title: "What are AI tools?",
+          bodyMdx:
+            "AI tools are applications built on machine learning models that help you write, code, design, analyze, and automate.\n\nThey range from general assistants like Claude and ChatGPT to specialized tools for images, audio, and research.\n\nThis course teaches you how to choose the right one for a given job — the DStarix way.",
+        },
+        {
+          slug: "choosing-the-right-tool",
+          title: "Choosing the right tool",
+          bodyMdx:
+            "Start with the job, not the tool. Describe what you want to accomplish, then compare the options on capability, price, and trust.\n\nUse the DStarix Decision Score and the AI Advisor to shortlist quickly, then read reviews before committing.",
+        },
+      ],
+    },
+    {
+      slug: "python-for-ai-beginners",
+      title: "Python for AI: Beginners",
+      summary: "The Python foundations you need to work with AI APIs and data.",
+      topic: "Python",
+      level: "BEGINNER" as const,
+      lessons: [
+        {
+          slug: "why-python-for-ai",
+          title: "Why Python for AI",
+          bodyMdx:
+            "Python is the lingua franca of AI: readable syntax, a vast ecosystem, and first-class SDKs from every major AI provider.\n\nIn this course you'll learn just enough Python to call AI APIs and process their results.",
+        },
+      ],
+    },
+  ];
+  for (const course of learnCourses) {
+    const created = await prisma.course.upsert({
+      where: { slug: course.slug },
+      update: {
+        title: course.title,
+        summary: course.summary,
+        topic: course.topic,
+        level: course.level,
+        status: "PUBLISHED",
+        publishedAt: new Date(),
+      },
+      create: {
+        slug: course.slug,
+        title: course.title,
+        summary: course.summary,
+        topic: course.topic,
+        level: course.level,
+        status: "PUBLISHED",
+        publishedAt: new Date(),
+      },
+    });
+    for (const [index, lesson] of course.lessons.entries()) {
+      await prisma.lesson.upsert({
+        where: { courseId_slug: { courseId: created.id, slug: lesson.slug } },
+        update: { title: lesson.title, bodyMdx: lesson.bodyMdx, sortOrder: index },
+        create: {
+          courseId: created.id,
+          slug: lesson.slug,
+          title: lesson.title,
+          bodyMdx: lesson.bodyMdx,
+          sortOrder: index,
+        },
+      });
+    }
+  }
+
+  // DStarix Careers — jobs (aggregated-style seed; company links shared graph)
+  const jobs = [
+    {
+      slug: "ai-engineer-anthropic",
+      title: "AI Engineer",
+      companySlug: "anthropic",
+      companyName: "Anthropic",
+      location: "San Francisco, CA",
+      remote: true,
+      kind: "FULL_TIME" as const,
+      description:
+        "Build and evaluate AI systems that are safe, steerable, and genuinely useful.\n\nYou'll work across model capabilities, tooling, and product surfaces alongside a world-class team.",
+      applyUrl: "https://www.anthropic.com/careers",
+      salaryMinMinor: 20000000,
+      salaryMaxMinor: 35000000,
+    },
+    {
+      slug: "ml-engineer-openai",
+      title: "Machine Learning Engineer",
+      companySlug: "openai",
+      companyName: "OpenAI",
+      location: "San Francisco, CA",
+      remote: false,
+      kind: "FULL_TIME" as const,
+      description:
+        "Design, train, and ship machine learning systems at frontier scale.\n\nStrong software engineering plus applied ML experience required.",
+      applyUrl: "https://openai.com/careers",
+      salaryMinMinor: 22000000,
+      salaryMaxMinor: 40000000,
+    },
+  ];
+  for (const job of jobs) {
+    const companyId = companyIds.get(job.companySlug);
+    await prisma.job.upsert({
+      where: { slug: job.slug },
+      update: {
+        title: job.title,
+        companyId,
+        companyName: job.companyName,
+        location: job.location,
+        remote: job.remote,
+        kind: job.kind,
+        description: job.description,
+        applyUrl: job.applyUrl,
+        salaryMinMinor: job.salaryMinMinor,
+        salaryMaxMinor: job.salaryMaxMinor,
+        status: "PUBLISHED",
+        source: "direct",
+        publishedAt: new Date(),
+      },
+      create: {
+        slug: job.slug,
+        title: job.title,
+        companyId,
+        companyName: job.companyName,
+        location: job.location,
+        remote: job.remote,
+        kind: job.kind,
+        description: job.description,
+        applyUrl: job.applyUrl,
+        salaryMinMinor: job.salaryMinMinor,
+        salaryMaxMinor: job.salaryMaxMinor,
+        salaryCurrency: "USD",
+        status: "PUBLISHED",
+        source: "direct",
+        publishedAt: new Date(),
+      },
+    });
+  }
+
   console.log(
-    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 2 collections, 1 editor.`,
+    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 2 collections, ${learnCourses.length} courses, ${jobs.length} jobs, 1 editor.`,
   );
 }
 

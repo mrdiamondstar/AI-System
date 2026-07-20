@@ -52,8 +52,11 @@ export default async function HomePage() {
             <Link href="/advisor" className="text-muted-foreground hover:text-foreground">
               AI Advisor
             </Link>
-            <Link href="/search" className="text-muted-foreground hover:text-foreground">
-              Search
+            <Link href="/learn" className="text-muted-foreground hover:text-foreground">
+              Learn
+            </Link>
+            <Link href="/careers" className="text-muted-foreground hover:text-foreground">
+              Careers
             </Link>
             <Link href="/login" className="font-medium hover:text-brand">
               Sign in

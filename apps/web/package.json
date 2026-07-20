@@ -18,6 +18,8 @@
     "@dstarix/engagement": "workspace:*",
     "@dstarix/growth": "workspace:*",
     "@dstarix/identity": "workspace:*",
+    "@dstarix/jobs": "workspace:*",
+    "@dstarix/learning": "workspace:*",
     "@dstarix/seo": "workspace:*",
     "@dstarix/shared": "workspace:*",
     "@dstarix/ui": "workspace:*",

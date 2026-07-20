@@ -5,6 +5,8 @@ import {
   listPublishedCollectionSlugs,
   listPublishedSlugs,
 } from "@dstarix/catalog";
+import { listPublishedCourseSlugs } from "@dstarix/learning";
+import { listActiveJobSlugs } from "@dstarix/jobs";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -13,11 +15,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
  * file once the catalog passes ~10K URLs.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [entities, categories, comparisons, collections] = await Promise.all([
+  const [entities, categories, comparisons, collections, courses, jobs] = await Promise.all([
     listPublishedSlugs(),
     listCategories(),
     listComparisonPairs(),
     listPublishedCollectionSlugs(),
+    listPublishedCourseSlugs(),
+    listActiveJobSlugs(),
   ]);
 
   return [
@@ -49,6 +53,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...comparisons.map((pair) => ({
       url: `${siteUrl}/compare/${pair.a}-vs-${pair.b}`,
       changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    { url: `${siteUrl}/learn`, changeFrequency: "weekly" as const, priority: 0.7 },
+    ...courses.map((course) => ({
+      url: `${siteUrl}/learn/${course.slug}`,
+      lastModified: course.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    { url: `${siteUrl}/careers`, changeFrequency: "daily" as const, priority: 0.7 },
+    ...jobs.map((job) => ({
+      url: `${siteUrl}/careers/${job.slug}`,
+      lastModified: job.updatedAt,
+      changeFrequency: "daily" as const,
       priority: 0.6,
     })),
   ];

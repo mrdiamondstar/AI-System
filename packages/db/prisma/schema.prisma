@@ -143,6 +143,7 @@ model Company {
   deletedAt   DateTime? @map("deleted_at")
 
   entities Entity[]
+  jobs     Job[]
 
   @@map("companies")
 }
@@ -454,6 +455,103 @@ model OutboxEvent {
 
   @@index([processedAt, occurredAt])
   @@map("outbox_events")
+}
+
+// ---------------------------------------------------------------------------
+// DStarix Learn (doc 07 §3). Course → Lesson; content is MDX stored in DB.
+// ---------------------------------------------------------------------------
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model Course {
+  id          String        @id @default(uuid(7)) @db.Uuid
+  slug        String        @unique
+  title       String
+  summary     String?
+  level       CourseLevel   @default(BEGINNER)
+  topic       String // e.g. "AI", "Python", "Cloud", "Data Science"
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?     @map("published_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  lessons Lesson[]
+
+  @@index([status, topic])
+  @@map("courses")
+}
+
+model Lesson {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  courseId  String   @map("course_id") @db.Uuid
+  slug      String
+  title     String
+  bodyMdx   String   @map("body_mdx")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, slug])
+  @@index([courseId])
+  @@map("lessons")
+}
+
+// ---------------------------------------------------------------------------
+// DStarix Careers (doc 07 §5). Company is the SHARED entity with the catalog.
+// ---------------------------------------------------------------------------
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  EXPIRED
+  ARCHIVED
+}
+
+enum JobKind {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+model Job {
+  id             String    @id @default(uuid(7)) @db.Uuid
+  slug           String    @unique
+  title          String
+  companyId      String?   @map("company_id") @db.Uuid
+  companyName    String    @map("company_name") // denormalized for aggregated postings
+  location       String?
+  remote         Boolean   @default(false)
+  kind           JobKind   @default(FULL_TIME)
+  description    String
+  applyUrl       String    @map("apply_url")
+  salaryMinMinor Int?      @map("salary_min_minor")
+  salaryMaxMinor Int?      @map("salary_max_minor")
+  salaryCurrency String    @default("USD") @map("salary_currency") @db.Char(3)
+  status         JobStatus @default(DRAFT)
+  source         String? // "aggregated" | "direct"
+  publishedAt    DateTime? @map("published_at")
+  expiresAt      DateTime? @map("expires_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  company Company? @relation(fields: [companyId], references: [id])
+
+  @@index([status, publishedAt])
+  @@index([companyId])
+  @@map("jobs")
 }
 
 // ---------------------------------------------------------------------------
