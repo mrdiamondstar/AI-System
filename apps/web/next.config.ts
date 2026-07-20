@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     "@dstarix/apikeys",
     "@dstarix/marketplace",
     "@dstarix/observability",
+    "@dstarix/profiles",
   ],
   poweredByHeader: false,
   async headers() {

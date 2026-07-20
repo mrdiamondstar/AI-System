@@ -52,6 +52,9 @@ model User {
   apiKeys       ApiKey[]
   listings      MarketplaceListing[]
   orders        MarketplaceOrder[]
+  resume        Resume?
+  portfolio     Portfolio?
+  certificates  Certificate[]
 
   @@map("users")
 }
@@ -558,6 +561,39 @@ model Lesson {
   @@map("lessons")
 }
 
+// Course assessment: a bank of questions; a passing attempt issues a
+// verifiable Certificate (doc 07 §3). Correct answers are never sent to the
+// client — grading is server-side only.
+model AssessmentQuestion {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  courseSlug String   @map("course_slug")
+  prompt     String
+  options    Json // string[]
+  answerIdx  Int      @map("answer_idx") // index of the correct option (server-only)
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([courseSlug])
+  @@map("assessment_questions")
+}
+
+model Certificate {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  courseSlug String   @map("course_slug")
+  courseTitle String  @map("course_title")
+  scorePct   Int      @map("score_pct")
+  // Public verification code shown at /verify/{code}
+  code       String   @unique
+  issuedAt   DateTime @default(now()) @map("issued_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseSlug])
+  @@index([userId])
+  @@map("certificates")
+}
+
 // ---------------------------------------------------------------------------
 // DStarix Careers (doc 07 §5). Company is the SHARED entity with the catalog.
 // ---------------------------------------------------------------------------
@@ -643,6 +679,41 @@ model ApiUsageDay {
 
   @@id([apiKeyId, day])
   @@map("api_usage_days")
+}
+
+// ---------------------------------------------------------------------------
+// Careers — Resume & Portfolio builder (doc 07 §5). Resume is structured JSON
+// (single source of truth, also used as job-match features). Portfolio is a
+// public profile at /@handle that surfaces projects + earned certificates.
+// ---------------------------------------------------------------------------
+
+model Resume {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  // Structured resume: { headline, summary, contact, experience[], education[], skills[] }
+  data      Json     @default("{}")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("resumes")
+}
+
+model Portfolio {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  headline  String?
+  bio       String?
+  links     Json     @default("[]") // [{ label, url }]
+  projects  Json     @default("[]") // [{ title, description, url }]
+  published Boolean  @default(false)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("portfolios")
 }
 
 // ---------------------------------------------------------------------------

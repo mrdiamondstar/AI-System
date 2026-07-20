@@ -50,11 +50,12 @@ export default async function AccountPage() {
               Pro renews {subscription.currentPeriodEnd.toLocaleDateString("en-US")}
             </p>
           ) : null}
-          <p className="pt-2">
-            <Link href="/account/developer" className="text-sm font-medium text-brand">
-              API keys & developer settings →
-            </Link>
-          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 text-sm font-medium text-brand">
+            <Link href="/account/developer">API keys →</Link>
+            <Link href="/account/resume">Resume builder →</Link>
+            <Link href="/account/portfolio">Portfolio →</Link>
+            <Link href="/account/purchases">Purchases →</Link>
+          </div>
         </CardContent>
       </Card>
       <section aria-labelledby="bookmarks-heading" className="mt-10">
