@@ -23,6 +23,7 @@
     "@dstarix/learning": "workspace:*",
     "@dstarix/marketplace": "workspace:*",
     "@dstarix/notifications": "workspace:*",
+    "@dstarix/observability": "workspace:*",
     "@dstarix/payments": "workspace:*",
     "@dstarix/seo": "workspace:*",
     "@dstarix/shared": "workspace:*",
