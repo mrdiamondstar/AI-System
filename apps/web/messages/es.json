@@ -1,0 +1,22 @@
+{
+  "nav": {
+    "categories": "Categorías",
+    "collections": "Colecciones",
+    "advisor": "Asesor IA",
+    "learn": "Aprender",
+    "careers": "Empleos",
+    "marketplace": "Mercado",
+    "pricing": "Precios",
+    "signIn": "Iniciar sesión"
+  },
+  "home": {
+    "heroTitle": "Encuentra la herramienta de IA adecuada en minutos, no en horas.",
+    "heroSubtitle": "DStarix es la plataforma de decisiones de IA: datos verificados, puntuaciones transparentes y recomendaciones que explican el porqué.",
+    "searchPlaceholder": "Busca herramientas de IA o describe lo que quieres lograr…",
+    "searchButton": "Buscar",
+    "browseByCategory": "Explorar por categoría"
+  },
+  "footer": {
+    "tagline": "La plataforma de decisiones de IA más confiable del mundo"
+  }
+}

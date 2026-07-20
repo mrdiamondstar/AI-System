@@ -1,0 +1,22 @@
+{
+  "nav": {
+    "categories": "Categories",
+    "collections": "Collections",
+    "advisor": "AI Advisor",
+    "learn": "Learn",
+    "careers": "Careers",
+    "marketplace": "Marketplace",
+    "pricing": "Pricing",
+    "signIn": "Sign in"
+  },
+  "home": {
+    "heroTitle": "Find the right AI tool in minutes — not hours.",
+    "heroSubtitle": "DStarix is the AI Decision Platform: verified data, transparent scores, and recommendations that explain why.",
+    "searchPlaceholder": "Search AI tools or describe what you want to accomplish…",
+    "searchButton": "Search",
+    "browseByCategory": "Browse by category"
+  },
+  "footer": {
+    "tagline": "The world's most trusted AI Decision Platform"
+  }
+}

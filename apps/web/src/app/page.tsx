@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import {
   getNewEntities,
   getTopEntities,
@@ -15,11 +16,12 @@ export const revalidate = 300;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export default async function HomePage() {
-  const [topEntities, newEntities, categories, collections] = await Promise.all([
+  const [topEntities, newEntities, categories, collections, t] = await Promise.all([
     getTopEntities(6),
     getNewEntities(6),
     listCategories(),
     listPublishedCollections(3),
+    getTranslations("home"),
   ]);
 
   const structuredData = jsonLd(organization(siteUrl), webSite(siteUrl));
@@ -75,25 +77,24 @@ export default async function HomePage() {
         {/* Hero — discovery-first (Knowledge_02 §Homepage Strategy) */}
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-24 text-center">
           <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            Find the right AI tool in minutes — not hours.
+            {t("heroTitle")}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">
-            DStarix is the AI Decision Platform: verified data, transparent Decision Scores, and
-            recommendations that explain <em>why</em>.
+            {t("heroSubtitle")}
           </p>
           <form action="/search" role="search" className="mx-auto mt-10 flex max-w-xl gap-2">
             <label htmlFor="q" className="sr-only">
-              Search AI tools
+              {t("searchButton")}
             </label>
             <Input
               id="q"
               name="q"
               type="search"
-              placeholder="Search AI tools or describe what you want to accomplish…"
+              placeholder={t("searchPlaceholder")}
               className="h-12 text-base"
             />
             <Button size="lg" type="submit">
-              Search
+              {t("searchButton")}
             </Button>
           </form>
         </section>
