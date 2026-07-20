@@ -1,5 +1,5 @@
 {
-  "name": "@dstarix/growth",
+  "name": "@dstarix/notifications",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,10 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dstarix/db": "workspace:*",
-    "@dstarix/notifications": "workspace:*",
-    "@dstarix/shared": "workspace:*",
-    "zod": "^4.1.0"
+    "@dstarix/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.7.0",

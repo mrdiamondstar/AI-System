@@ -50,6 +50,12 @@ importers:
       '@dstarix/learning':
         specifier: workspace:*
         version: link:../../packages/modules/learning
+      '@dstarix/notifications':
+        specifier: workspace:*
+        version: link:../../packages/modules/notifications
+      '@dstarix/payments':
+        specifier: workspace:*
+        version: link:../../packages/modules/payments
       '@dstarix/seo':
         specifier: workspace:*
         version: link:../../packages/seo
@@ -251,6 +257,9 @@ importers:
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../db
+      '@dstarix/notifications':
+        specifier: workspace:*
+        version: link:../notifications
       '@dstarix/shared':
         specifier: workspace:*
         version: link:../../shared
@@ -302,6 +311,35 @@ importers:
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../db
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/notifications:
+    dependencies:
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/payments:
+    dependencies:
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

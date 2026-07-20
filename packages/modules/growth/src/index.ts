@@ -1,4 +1,5 @@
 import { prisma } from "@dstarix/db";
+import { sendNewsletterConfirmation } from "@dstarix/notifications";
 import { AppError } from "@dstarix/shared";
 import { z } from "zod";
 
@@ -34,6 +35,10 @@ export async function subscribeToNewsletter(
     update: { status: "PENDING", source },
     create: { email: parsed.data, source },
   });
+
+  // Double opt-in confirmation (email dispatch is fire-and-forget — a mail
+  // failure must not fail the subscription write).
+  void sendNewsletterConfirmation(parsed.data).catch(() => undefined);
 
   return { status: "subscribed" };
 }

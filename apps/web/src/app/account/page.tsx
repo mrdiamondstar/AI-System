@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { listBookmarks } from "@dstarix/engagement";
-import { Card, CardContent, CardHeader, CardTitle } from "@dstarix/ui";
+import { getActiveSubscription } from "@dstarix/payments";
+import { Badge, Card, CardContent, CardHeader, CardTitle } from "@dstarix/ui";
 import { SignOutButton } from "@/components/sign-out-button";
 import { getSession } from "@/lib/session";
 
@@ -15,7 +16,10 @@ export default async function AccountPage() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const bookmarks = await listBookmarks(session.user.id);
+  const [bookmarks, subscription] = await Promise.all([
+    listBookmarks(session.user.id),
+    getActiveSubscription(session.user.id),
+  ]);
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
@@ -25,13 +29,27 @@ export default async function AccountPage() {
       </div>
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Profile</CardTitle>
+            {subscription ? (
+              <Badge variant="brand">DStarix Pro</Badge>
+            ) : (
+              <Link href="/pricing" className="text-sm font-medium text-brand">
+                Upgrade to Pro →
+              </Link>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-1">
           <p>
             <span className="text-foreground">{session.user.name}</span>
           </p>
           <p>{session.user.email}</p>
+          {subscription?.currentPeriodEnd ? (
+            <p className="text-xs">
+              Pro renews {subscription.currentPeriodEnd.toLocaleDateString("en-US")}
+            </p>
+          ) : null}
         </CardContent>
       </Card>
       <section aria-labelledby="bookmarks-heading" className="mt-10">

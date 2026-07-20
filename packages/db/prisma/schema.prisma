@@ -42,11 +42,13 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
   deletedAt     DateTime? @map("deleted_at")
 
-  reviews     Review[]
-  collections Collection[]
-  bookmarks   Bookmark[]
-  sessions    Session[]
-  accounts    Account[]
+  reviews       Review[]
+  collections   Collection[]
+  bookmarks     Bookmark[]
+  sessions      Session[]
+  accounts      Account[]
+  subscriptions Subscription[]
+  entitlements  Entitlement[]
 
   @@map("users")
 }
@@ -455,6 +457,51 @@ model OutboxEvent {
 
   @@index([processedAt, occurredAt])
   @@map("outbox_events")
+}
+
+// ---------------------------------------------------------------------------
+// Payments & entitlements (doc 07 §8). Provider-agnostic internal model;
+// provider adapters translate webhooks → these rows (webhooks are truth).
+// Entitlements are separate from roles: premium access is derived from a paid
+// subscription, never hand-set.
+// ---------------------------------------------------------------------------
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+model Subscription {
+  id                 String             @id @default(uuid(7)) @db.Uuid
+  userId             String             @map("user_id") @db.Uuid
+  provider           String // "razorpay" | "paddle" | "mock"
+  providerSubId      String             @unique @map("provider_sub_id")
+  plan               String // "pro" | "team" | ...
+  status             SubscriptionStatus @default(TRIALING)
+  currentPeriodEnd   DateTime?          @map("current_period_end")
+  cancelAtPeriodEnd  Boolean            @default(false) @map("cancel_at_period_end")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model Entitlement {
+  userId    String   @map("user_id") @db.Uuid
+  feature   String // "advisor_unlimited" | "premium_content" | ...
+  grantedAt DateTime @default(now()) @map("granted_at")
+  expiresAt DateTime? @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, feature])
+  @@map("entitlements")
 }
 
 // ---------------------------------------------------------------------------
