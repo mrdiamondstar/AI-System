@@ -14,6 +14,7 @@
   "dependencies": {
     "@dstarix/advisor": "workspace:*",
     "@dstarix/analytics": "workspace:*",
+    "@dstarix/apikeys": "workspace:*",
     "@dstarix/catalog": "workspace:*",
     "@dstarix/engagement": "workspace:*",
     "@dstarix/growth": "workspace:*",

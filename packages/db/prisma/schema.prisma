@@ -49,6 +49,7 @@ model User {
   accounts      Account[]
   subscriptions Subscription[]
   entitlements  Entitlement[]
+  apiKeys       ApiKey[]
 
   @@map("users")
 }
@@ -599,6 +600,47 @@ model Job {
   @@index([status, publishedAt])
   @@index([companyId])
   @@map("jobs")
+}
+
+// ---------------------------------------------------------------------------
+// Public API (doc 04 §3, Phase 4). Keys are stored hashed (never plaintext);
+// the prefix is shown for identification. Usage is metered per key per day
+// for billing and quota enforcement.
+// ---------------------------------------------------------------------------
+
+enum ApiPlan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+model ApiKey {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  name       String
+  prefix     String    @unique // public identifier, e.g. "dsk_live_ab12"
+  keyHash    String    @map("key_hash") // sha-256 of the full secret
+  plan       ApiPlan   @default(FREE)
+  lastUsedAt DateTime? @map("last_used_at")
+  revokedAt  DateTime? @map("revoked_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usage ApiUsageDay[]
+
+  @@index([userId])
+  @@map("api_keys")
+}
+
+model ApiUsageDay {
+  apiKeyId String   @map("api_key_id") @db.Uuid
+  day      DateTime @db.Date
+  count    Int      @default(0)
+
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@id([apiKeyId, day])
+  @@map("api_usage_days")
 }
 
 // ---------------------------------------------------------------------------

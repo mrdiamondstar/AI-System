@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     "@dstarix/jobs",
     "@dstarix/payments",
     "@dstarix/notifications",
+    "@dstarix/apikeys",
   ],
   poweredByHeader: false,
   async headers() {

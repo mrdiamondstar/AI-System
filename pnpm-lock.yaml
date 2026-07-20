@@ -32,6 +32,9 @@ importers:
       '@dstarix/analytics':
         specifier: workspace:*
         version: link:../../packages/modules/analytics
+      '@dstarix/apikeys':
+        specifier: workspace:*
+        version: link:../../packages/modules/apikeys
       '@dstarix/catalog':
         specifier: workspace:*
         version: link:../../packages/modules/catalog
@@ -196,6 +199,22 @@ importers:
         version: 5.9.3
 
   packages/modules/analytics:
+    dependencies:
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/apikeys:
     dependencies:
       '@dstarix/db':
         specifier: workspace:*
