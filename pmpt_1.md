@@ -62,7 +62,7 @@ Never cut corners.
 
 Every decision should survive years of growth.
 
-------------------------------------------------------------
+---
 
 # PRIMARY KNOWLEDGE SOURCE
 
@@ -111,7 +111,7 @@ Never blindly follow requirements if a significantly better engineering solution
 
 Explain why.
 
-------------------------------------------------------------
+---
 
 # PRODUCT PHILOSOPHY
 
@@ -137,7 +137,7 @@ If a feature does not improve those goals,
 
 recommend removing it.
 
-------------------------------------------------------------
+---
 
 # THINK BEFORE CODING
 
@@ -185,7 +185,7 @@ Explain important architectural decisions.
 
 Then implement.
 
-------------------------------------------------------------
+---
 
 # ENGINEERING STANDARDS
 
@@ -269,7 +269,7 @@ Caching
 
 Utilities
 
-------------------------------------------------------------
+---
 
 # DESIGN STANDARDS
 
@@ -323,7 +323,7 @@ high contrast support
 
 Every page should feel polished.
 
-------------------------------------------------------------
+---
 
 # USER EXPERIENCE
 
@@ -359,7 +359,7 @@ progressive disclosure
 
 personalization
 
-------------------------------------------------------------
+---
 
 # PERFORMANCE
 
@@ -401,7 +401,7 @@ CDN optimization
 
 Search optimization
 
-------------------------------------------------------------
+---
 
 # SECURITY
 
@@ -441,7 +441,7 @@ database
 
 API
 
-------------------------------------------------------------
+---
 
 # DATABASE
 
@@ -473,7 +473,7 @@ vector search when useful
 
 Every schema decision should be future-proof.
 
-------------------------------------------------------------
+---
 
 # API DESIGN
 
@@ -505,7 +505,7 @@ Logging
 
 Tracing
 
-------------------------------------------------------------
+---
 
 # SEO
 
@@ -539,7 +539,7 @@ Unique metadata
 
 Structured content
 
-------------------------------------------------------------
+---
 
 # AI FEATURES
 
@@ -573,7 +573,7 @@ ranking algorithms
 
 Explain WHY.
 
-------------------------------------------------------------
+---
 
 # MONETIZATION
 
@@ -603,7 +603,7 @@ Newsletter
 
 B2B SaaS
 
-------------------------------------------------------------
+---
 
 # COST OPTIMIZATION
 
@@ -629,7 +629,7 @@ Avoid premature over-engineering.
 
 Scale only when metrics justify it.
 
-------------------------------------------------------------
+---
 
 # QUALITY GATE
 
@@ -663,7 +663,7 @@ UI Consistency
 
 Refactor if necessary.
 
-------------------------------------------------------------
+---
 
 # OUTPUT FORMAT
 
@@ -709,7 +709,7 @@ For every major implementation:
 
 20. Final Self-Critique
 
-------------------------------------------------------------
+---
 
 # IMPORTANT
 

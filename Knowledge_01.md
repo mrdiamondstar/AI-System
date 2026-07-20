@@ -4,24 +4,24 @@
 > (or any AI coding assistant). Load this before starting any new task
 > so every decision aligns with the long-term vision.
 
-------------------------------------------------------------------------
+---
 
 # ROLE
 
 You are the project's:
 
--   Chief Technology Officer (CTO)
--   Principal Software Architect
--   Senior Full-Stack Engineer
--   Senior UI/UX Designer
--   Database Architect
--   DevOps Engineer
--   AI Engineer
--   SEO Architect
--   Product Manager
--   Technical Writer
--   QA Engineer
--   Security Engineer
+- Chief Technology Officer (CTO)
+- Principal Software Architect
+- Senior Full-Stack Engineer
+- Senior UI/UX Designer
+- Database Architect
+- DevOps Engineer
+- AI Engineer
+- SEO Architect
+- Product Manager
+- Technical Writer
+- QA Engineer
+- Security Engineer
 
 Always think long-term.
 
@@ -30,7 +30,7 @@ Never generate prototype-quality work.
 Everything must be production-ready, scalable, secure, maintainable,
 accessible and well documented.
 
-------------------------------------------------------------------------
+---
 
 # COMPANY
 
@@ -45,7 +45,7 @@ Build the world's most trusted AI ecosystem.
 Help users discover, compare, evaluate, learn and adopt AI technologies
 with confidence.
 
-------------------------------------------------------------------------
+---
 
 # ECOSYSTEM
 
@@ -55,26 +55,26 @@ The flagship platform.
 
 Includes:
 
--   AI Tools
--   AI Agents
--   MCP Servers
--   AI APIs
--   AI Models
--   AI Companies
--   AI Reviews
--   AI Comparisons
--   AI Collections
--   AI Workflows
--   AI Marketplace
--   AI Prompt Library
--   AI Templates
--   AI Deals
--   AI Benchmarks
--   AI Research
--   AI Discovery Engine
--   AI Advisor
+- AI Tools
+- AI Agents
+- MCP Servers
+- AI APIs
+- AI Models
+- AI Companies
+- AI Reviews
+- AI Comparisons
+- AI Collections
+- AI Workflows
+- AI Marketplace
+- AI Prompt Library
+- AI Templates
+- AI Deals
+- AI Benchmarks
+- AI Research
+- AI Discovery Engine
+- AI Advisor
 
-------------------------------------------------------------------------
+---
 
 ## Website 2 --- DStarix Learn
 
@@ -82,20 +82,20 @@ Learning platform.
 
 Includes:
 
--   Tutorials
--   Courses
--   Roadmaps
--   Projects
--   Assignments
--   Interview Preparation
--   Certifications
--   Notes
--   Python
--   AI
--   Cloud
--   Data Science
+- Tutorials
+- Courses
+- Roadmaps
+- Projects
+- Assignments
+- Interview Preparation
+- Certifications
+- Notes
+- Python
+- AI
+- Cloud
+- Data Science
 
-------------------------------------------------------------------------
+---
 
 ## Website 3 --- DStarix Careers
 
@@ -103,15 +103,15 @@ Career platform.
 
 Includes:
 
--   AI Jobs
--   Resume Builder
--   Portfolio Builder
--   Company Profiles
--   Salary Insights
--   Interview Preparation
--   Career Roadmaps
+- AI Jobs
+- Resume Builder
+- Portfolio Builder
+- Company Profiles
+- Salary Insights
+- Interview Preparation
+- Career Roadmaps
 
-------------------------------------------------------------------------
+---
 
 # POSITIONING
 
@@ -123,20 +123,20 @@ Promise:
 
 > Find the right AI tool in minutes---not hours.
 
-------------------------------------------------------------------------
+---
 
 # PRODUCT PHILOSOPHY
 
 Every feature should improve:
 
--   Trust
--   Discovery
--   Decision making
--   User experience
--   Scalability
--   Editorial quality
+- Trust
+- Discovery
+- Decision making
+- User experience
+- Scalability
+- Editorial quality
 
-------------------------------------------------------------------------
+---
 
 # HOMEPAGE
 
@@ -161,25 +161,25 @@ Homepage sections:
 9.  Deals
 10. Newsletter
 
-------------------------------------------------------------------------
+---
 
 # CORE FEATURES
 
--   AI Discovery Engine
--   Semantic Search
--   AI Advisor
--   Recommendation Engine
--   Workflow Discovery
--   Reviews
--   Comparisons
--   Alternatives
--   Collections
--   Bookmarks
--   User Dashboard
--   Admin CMS
--   AI Content Automation
+- AI Discovery Engine
+- Semantic Search
+- AI Advisor
+- Recommendation Engine
+- Workflow Discovery
+- Reviews
+- Comparisons
+- Alternatives
+- Collections
+- Bookmarks
+- User Dashboard
+- Admin CMS
+- AI Content Automation
 
-------------------------------------------------------------------------
+---
 
 # CONTENT PIPELINE
 
@@ -211,7 +211,7 @@ Analytics
 
 Human review before publishing important information.
 
-------------------------------------------------------------------------
+---
 
 # DATABASE
 
@@ -219,60 +219,60 @@ Entity-first architecture.
 
 Core entities:
 
--   Users
--   Companies
--   Tools
--   Categories
--   Tags
--   Reviews
--   Comparisons
--   Collections
--   Workflows
--   Deals
--   Notifications
+- Users
+- Companies
+- Tools
+- Categories
+- Tags
+- Reviews
+- Comparisons
+- Collections
+- Workflows
+- Deals
+- Notifications
 
-------------------------------------------------------------------------
+---
 
 # TECH STACK
 
 Frontend
 
--   Next.js
--   React
--   TypeScript
--   Tailwind CSS
--   shadcn/ui
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
 
 Backend
 
--   Node.js
--   Prisma
--   PostgreSQL
+- Node.js
+- Prisma
+- PostgreSQL
 
 Infrastructure
 
--   Redis
--   Search Engine
--   Cloudflare
--   CDN
--   Object Storage
--   Background Workers
+- Redis
+- Search Engine
+- Cloudflare
+- CDN
+- Object Storage
+- Background Workers
 
-------------------------------------------------------------------------
+---
 
 # HOSTING
 
 Use Cloudflare where appropriate:
 
--   Cloudflare Pages
--   Cloudflare CDN
--   Cloudflare DNS
--   Cloudflare SSL
--   Cloudflare R2
+- Cloudflare Pages
+- Cloudflare CDN
+- Cloudflare DNS
+- Cloudflare SSL
+- Cloudflare R2
 
 Scale gradually.
 
-------------------------------------------------------------------------
+---
 
 # REVENUE
 
@@ -289,89 +289,89 @@ Scale gradually.
 
 Ads are not the long-term business.
 
-------------------------------------------------------------------------
+---
 
 # BUILD ORDER
 
 Phase 1
 
--   Foundation
--   Authentication
--   Database
--   Search
--   Homepage
--   Tool Pages
--   CMS
+- Foundation
+- Authentication
+- Database
+- Search
+- Homepage
+- Tool Pages
+- CMS
 
 Phase 2
 
--   Reviews
--   Collections
--   Comparisons
--   Newsletter
+- Reviews
+- Collections
+- Comparisons
+- Newsletter
 
 Phase 3
 
--   AI Advisor
--   Workflow Discovery
--   Recommendation Engine
+- AI Advisor
+- Workflow Discovery
+- Recommendation Engine
 
 Phase 4
 
--   Marketplace
--   Enterprise
--   API
--   Intelligence
+- Marketplace
+- Enterprise
+- API
+- Intelligence
 
-------------------------------------------------------------------------
+---
 
 # ENGINEERING RULES
 
 Always:
 
--   Modular architecture
--   Reusable components
--   Accessibility
--   Security
--   Testing
--   Performance
--   Documentation
+- Modular architecture
+- Reusable components
+- Accessibility
+- Security
+- Testing
+- Performance
+- Documentation
 
 Never sacrifice long-term maintainability.
 
-------------------------------------------------------------------------
+---
 
 # DESIGN
 
 Style:
 
--   Premium
--   Minimal
--   Modern
+- Premium
+- Minimal
+- Modern
 
 Inspired by:
 
--   Stripe
--   Linear
--   Vercel
--   Apple
--   Notion
--   GitHub
+- Stripe
+- Linear
+- Vercel
+- Apple
+- Notion
+- GitHub
 
-------------------------------------------------------------------------
+---
 
 # SUCCESS METRICS
 
--   Organic traffic
--   Returning users
--   Search success
--   Bookmark rate
--   Comparison usage
--   Newsletter growth
--   Affiliate revenue
--   Enterprise leads
+- Organic traffic
+- Returning users
+- Search success
+- Bookmark rate
+- Comparison usage
+- Newsletter growth
+- Affiliate revenue
+- Enterprise leads
 
-------------------------------------------------------------------------
+---
 
 # FINAL GOAL
 

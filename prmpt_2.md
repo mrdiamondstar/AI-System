@@ -25,7 +25,7 @@ Never sacrifice usability for visual effects.
 
 The frontend should be memorable enough that users immediately recognize DStarix without seeing the logo.
 
-------------------------------------------------------------
+---
 
 # DESIGN GOAL
 
@@ -67,7 +67,7 @@ The experience should feel polished, effortless, intelligent, and premium.
 
 Every page should look like it was designed by an elite product design team.
 
-------------------------------------------------------------
+---
 
 # DESIGN PHILOSOPHY
 
@@ -85,7 +85,7 @@ Every design decision should improve usability.
 
 Users should never have to think about how to use the interface.
 
-------------------------------------------------------------
+---
 
 # FIRST IMPRESSION
 
@@ -103,7 +103,7 @@ What should I do next?
 
 The hero section must naturally guide users toward discovering the perfect AI solution.
 
-------------------------------------------------------------
+---
 
 # INFORMATION ARCHITECTURE
 
@@ -125,7 +125,7 @@ Categories should be meaningful.
 
 Recommendations should feel personalized.
 
-------------------------------------------------------------
+---
 
 # SEARCH EXPERIENCE
 
@@ -169,7 +169,7 @@ Context-aware filtering
 
 Users should feel like they are talking to an AI assistant rather than using a search box.
 
-------------------------------------------------------------
+---
 
 # AI DISCOVERY EXPERIENCE
 
@@ -183,7 +183,7 @@ Every recommendation should explain WHY it exists.
 
 Users should feel confident making decisions.
 
-------------------------------------------------------------
+---
 
 # VISUAL HIERARCHY
 
@@ -199,7 +199,7 @@ Important content should naturally stand out.
 
 Never rely only on colors.
 
-------------------------------------------------------------
+---
 
 # USER INTERACTIONS
 
@@ -221,7 +221,7 @@ Nothing should feel abrupt.
 
 Micro-interactions should subtly reinforce user confidence.
 
-------------------------------------------------------------
+---
 
 # COMPONENT QUALITY
 
@@ -271,7 +271,7 @@ Everything should belong to one cohesive design language.
 
 Never mix styles.
 
-------------------------------------------------------------
+---
 
 # DESIGN SYSTEM
 
@@ -313,7 +313,7 @@ Every component must reuse these tokens.
 
 Never hardcode design values.
 
-------------------------------------------------------------
+---
 
 # ANIMATION PHILOSOPHY
 
@@ -351,7 +351,7 @@ Support reduced-motion preferences.
 
 Maintain 60 FPS whenever possible.
 
-------------------------------------------------------------
+---
 
 # RESPONSIVE DESIGN
 
@@ -371,7 +371,7 @@ Never simply shrink desktop layouts.
 
 Design each breakpoint intentionally.
 
-------------------------------------------------------------
+---
 
 # ACCESSIBILITY
 
@@ -409,7 +409,7 @@ Accessible charts
 
 Accessible dialogs
 
-------------------------------------------------------------
+---
 
 # PERFORMANCE
 
@@ -449,7 +449,7 @@ Prefetching
 
 Preloading
 
-------------------------------------------------------------
+---
 
 # TRUST DESIGN
 
@@ -477,7 +477,7 @@ Avoid dark patterns.
 
 Never manipulate users.
 
-------------------------------------------------------------
+---
 
 # DASHBOARDS
 
@@ -493,7 +493,7 @@ Support personalization.
 
 Enable fast scanning.
 
-------------------------------------------------------------
+---
 
 # EMPTY STATES
 
@@ -509,7 +509,7 @@ Recommend relevant AI tools.
 
 Offer search suggestions.
 
-------------------------------------------------------------
+---
 
 # ERROR STATES
 
@@ -523,7 +523,7 @@ Suggest recovery actions.
 
 Maintain user confidence.
 
-------------------------------------------------------------
+---
 
 # FORMS
 
@@ -543,7 +543,7 @@ Accessibility
 
 Clear success states
 
-------------------------------------------------------------
+---
 
 # FRONTEND ENGINEERING
 
@@ -579,7 +579,7 @@ Reusable design tokens
 
 Production-ready folder structure
 
-------------------------------------------------------------
+---
 
 # SEO + UX
 
@@ -601,7 +601,7 @@ Fast loading
 
 Accessible content
 
-------------------------------------------------------------
+---
 
 # FRONTEND QUALITY REVIEW
 
@@ -641,7 +641,7 @@ Decision flow
 
 Conversion optimization
 
-------------------------------------------------------------
+---
 
 # FINAL FRONTEND STANDARD
 

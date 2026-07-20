@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "@dstarix/ui/styles.css";
+
+/* Scan the shared UI package for class usage */
+@source "../../../../packages/ui/src";
+
+/* Class-based dark mode; toggled from prefers-color-scheme in layout script */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--ds-background);
+  --color-surface: var(--ds-surface);
+  --color-surface-muted: var(--ds-surface-muted);
+  --color-border: var(--ds-border);
+  --color-foreground: var(--ds-foreground);
+  --color-muted-foreground: var(--ds-muted-foreground);
+  --color-brand: var(--ds-brand);
+  --color-brand-foreground: var(--ds-brand-foreground);
+  --color-brand-soft: var(--ds-brand-soft);
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background-color: var(--ds-background);
+  color: var(--ds-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

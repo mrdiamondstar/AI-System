@@ -1,0 +1,420 @@
+// DStarix schema v1 — catalog core (doc 05).
+// Conventions: UUIDv7 ids, snake_case tables via @@map, soft delete only where
+// recovery/audit matters, money in minor units, statuses as enums.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_DATABASE_URL")
+  extensions = [pgcrypto, vector]
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// Better Auth (ADR-004) will own its own auth tables when integrated; this
+// User model is the app-domain profile they attach to.
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  USER
+  PRO
+  VENDOR
+  EDITOR
+  MODERATOR
+  ADMIN
+  SUPERADMIN
+}
+
+model User {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  email     String    @unique
+  name      String?
+  handle    String?   @unique
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  reviews     Review[]
+  collections Collection[]
+  bookmarks   Bookmark[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog — entity-first (doc 05 §1)
+// ---------------------------------------------------------------------------
+
+enum EntityType {
+  TOOL
+  AGENT
+  MODEL
+  API
+  MCP_SERVER
+}
+
+enum EntityStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PricingModel {
+  FREE
+  FREEMIUM
+  PAID
+  OPEN_SOURCE
+  CONTACT
+}
+
+model Company {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  slug        String    @unique
+  name        String
+  websiteUrl  String?   @map("website_url")
+  description String?
+  logoMediaId String?   @map("logo_media_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  entities Entity[]
+
+  @@map("companies")
+}
+
+model Entity {
+  id             String       @id @default(uuid(7)) @db.Uuid
+  type           EntityType
+  status         EntityStatus @default(DRAFT)
+  slug           String       @unique
+  name           String
+  tagline        String?
+  summary        String?
+  websiteUrl     String?      @map("website_url")
+  affiliateUrl   String?      @map("affiliate_url")
+  pricingModel   PricingModel @default(CONTACT) @map("pricing_model")
+  companyId      String?      @map("company_id") @db.Uuid
+  // Content-pipeline trust flags (doc 06 §6)
+  aiGenerated    Boolean      @default(false) @map("ai_generated")
+  lastVerifiedAt DateTime?    @map("last_verified_at")
+  publishedAt    DateTime?    @map("published_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  deletedAt      DateTime?    @map("deleted_at")
+
+  company         Company?         @relation(fields: [companyId], references: [id])
+  categories      EntityCategory[]
+  tags            EntityTag[]
+  pricingPlans    PricingPlan[]
+  media           Media[]
+  reviews         Review[]
+  score           EntityScore?
+  collectionItems CollectionItem[]
+  bookmarks       Bookmark[]
+
+  @@index([status, type])
+  @@index([companyId])
+  @@index([publishedAt])
+  @@map("entities")
+}
+
+model Category {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  slug        String   @unique
+  name        String
+  description String?
+  parentId    String?  @map("parent_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  parent   Category?        @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[]       @relation("CategoryTree")
+  entities EntityCategory[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+model EntityCategory {
+  entityId   String  @map("entity_id") @db.Uuid
+  categoryId String  @map("category_id") @db.Uuid
+  isPrimary  Boolean @default(false) @map("is_primary")
+
+  entity   Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([entityId, categoryId])
+  @@index([categoryId])
+  @@map("entity_categories")
+}
+
+model Tag {
+  id   String @id @default(uuid(7)) @db.Uuid
+  slug String @unique
+  name String
+
+  entities EntityTag[]
+
+  @@map("tags")
+}
+
+model EntityTag {
+  entityId String @map("entity_id") @db.Uuid
+  tagId    String @map("tag_id") @db.Uuid
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([entityId, tagId])
+  @@index([tagId])
+  @@map("entity_tags")
+}
+
+model PricingPlan {
+  id               String   @id @default(uuid(7)) @db.Uuid
+  entityId         String   @map("entity_id") @db.Uuid
+  name             String
+  // Minor units (paise/cents); null = custom/contact pricing
+  priceMinor       Int?     @map("price_minor")
+  currency         String   @default("USD") @db.Char(3)
+  billingPeriod    String?  @map("billing_period") // monthly | yearly | one_time
+  features         Json     @default("[]")
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([entityId])
+  @@map("pricing_plans")
+}
+
+// ---------------------------------------------------------------------------
+// Media (doc 05 §4) — R2-backed, validated by worker before "READY"
+// ---------------------------------------------------------------------------
+
+enum MediaStatus {
+  PENDING
+  READY
+  REJECTED
+}
+
+model Media {
+  id          String      @id @default(uuid(7)) @db.Uuid
+  entityId    String?     @map("entity_id") @db.Uuid
+  bucket      String
+  objectKey   String      @map("object_key")
+  contentType String      @map("content_type")
+  sizeBytes   Int         @map("size_bytes")
+  altText     String?     @map("alt_text")
+  status      MediaStatus @default(PENDING)
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  entity Entity? @relation(fields: [entityId], references: [id], onDelete: SetNull)
+
+  @@unique([bucket, objectKey])
+  @@index([entityId])
+  @@map("media")
+}
+
+// ---------------------------------------------------------------------------
+// Engagement — reviews, scores, collections, bookmarks
+// ---------------------------------------------------------------------------
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SPAM
+}
+
+model Review {
+  id          String       @id @default(uuid(7)) @db.Uuid
+  entityId    String       @map("entity_id") @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  rating      Int          @db.SmallInt
+  title       String?
+  body        String
+  status      ReviewStatus @default(PENDING)
+  moderatedBy String?      @map("moderated_by") @db.Uuid
+  moderatedAt DateTime?    @map("moderated_at")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  // One review per user per entity
+  @@unique([entityId, userId])
+  @@index([entityId, status])
+  @@index([userId])
+  @@map("reviews")
+}
+
+// Denormalized aggregates + Decision Score (doc 07 §1). Recomputed by event
+// consumers; never joined-and-aggregated at read time.
+model EntityScore {
+  entityId      String   @id @map("entity_id") @db.Uuid
+  decisionScore Int      @default(0) @map("decision_score") @db.SmallInt
+  scoreVersion  Int      @default(1) @map("score_version")
+  factors       Json     @default("{}")
+  ratingAvg     Decimal  @default(0) @map("rating_avg") @db.Decimal(3, 2)
+  ratingCount   Int      @default(0) @map("rating_count")
+  bookmarkCount Int      @default(0) @map("bookmark_count")
+  computedAt    DateTime @default(now()) @map("computed_at")
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([decisionScore])
+  @@map("entity_scores")
+}
+
+enum CollectionStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Collection {
+  id          String           @id @default(uuid(7)) @db.Uuid
+  slug        String           @unique
+  title       String
+  description String?
+  isEditorial Boolean          @default(false) @map("is_editorial")
+  ownerId     String?          @map("owner_id") @db.Uuid
+  status      CollectionStatus @default(DRAFT)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  owner User?            @relation(fields: [ownerId], references: [id])
+  items CollectionItem[]
+
+  @@index([ownerId])
+  @@map("collections")
+}
+
+model CollectionItem {
+  collectionId String   @map("collection_id") @db.Uuid
+  entityId     String   @map("entity_id") @db.Uuid
+  note         String?
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  entity     Entity     @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, entityId])
+  @@index([entityId])
+  @@map("collection_items")
+}
+
+model Bookmark {
+  userId    String   @map("user_id") @db.Uuid
+  entityId  String   @map("entity_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, entityId])
+  @@index([entityId])
+  @@map("bookmarks")
+}
+
+// ---------------------------------------------------------------------------
+// SEO — slug rename 301 discipline (doc 03 §4)
+// ---------------------------------------------------------------------------
+
+model SlugRedirect {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  entityKind String   @map("entity_kind") // entities | categories | collections | companies
+  fromSlug   String   @map("from_slug")
+  toSlug     String   @map("to_slug")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([entityKind, fromSlug])
+  @@map("slug_redirects")
+}
+
+// ---------------------------------------------------------------------------
+// Growth — newsletter (Phase 1 KPI)
+// ---------------------------------------------------------------------------
+
+enum SubscriberStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+}
+
+model NewsletterSubscriber {
+  id        String           @id @default(uuid(7)) @db.Uuid
+  email     String           @unique
+  status    SubscriberStatus @default(PENDING)
+  source    String?
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  @@map("newsletter_subscribers")
+}
+
+// ---------------------------------------------------------------------------
+// Semantic layer — pgvector embeddings (doc 06 §2).
+// Queried via raw SQL behind the search repository (Prisma can't query
+// Unsupported types directly).
+// ---------------------------------------------------------------------------
+
+model Embedding {
+  id          String                       @id @default(uuid(7)) @db.Uuid
+  subjectKind String                       @map("subject_kind") // entity | category | collection
+  subjectId   String                       @map("subject_id") @db.Uuid
+  contentHash String                       @map("content_hash")
+  vector      Unsupported("vector(1024)")?
+  createdAt   DateTime                     @default(now()) @map("created_at")
+
+  @@unique([subjectKind, subjectId])
+  @@map("embeddings")
+}
+
+// ---------------------------------------------------------------------------
+// Eventing — transactional outbox (doc 02 §5)
+// ---------------------------------------------------------------------------
+
+model OutboxEvent {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  topic       String
+  payload     Json
+  occurredAt  DateTime  @default(now()) @map("occurred_at")
+  processedAt DateTime? @map("processed_at")
+  attempts    Int       @default(0)
+
+  @@index([processedAt, occurredAt])
+  @@map("outbox_events")
+}
+
+// ---------------------------------------------------------------------------
+// Governance — audit log (doc 04 §5); append-only by convention
+// ---------------------------------------------------------------------------
+
+model AuditLog {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String
+  resource   String
+  resourceId String?  @map("resource_id")
+  before     Json?
+  after      Json?
+  ip         String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([resource, resourceId])
+  @@index([actorId, createdAt])
+  @@map("audit_log")
+}

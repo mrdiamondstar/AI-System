@@ -1,0 +1,28 @@
+{
+  "name": "dstarix",
+  "private": true,
+  "version": "0.1.0",
+  "description": "DStarix — the world's most trusted AI Decision Platform",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @dstarix/db db:generate",
+    "db:migrate": "pnpm --filter @dstarix/db db:migrate",
+    "db:seed": "pnpm --filter @dstarix/db db:seed"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.0",
+    "prettier": "^3.6.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

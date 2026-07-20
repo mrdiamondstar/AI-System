@@ -1,0 +1,34 @@
+import { cva, type VariantProps } from "class-variance-authority";
+import type { HTMLAttributes } from "react";
+import { cn } from "../lib/cn";
+
+const badgeVariants = cva(
+  "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium",
+  {
+    variants: {
+      variant: {
+        neutral: "bg-[var(--ds-surface-muted)] text-[var(--ds-muted-foreground)]",
+        brand: "bg-[var(--ds-brand-soft)] text-[var(--ds-brand)]",
+        success: "bg-[var(--ds-brand-soft)] text-[var(--ds-success)]",
+        /**
+         * Trust guardrail (doc 01): sponsored placements MUST use this variant.
+         * There is deliberately no way to render sponsored content unlabeled.
+         */
+        sponsored:
+          "bg-[var(--ds-sponsored-bg)] text-[var(--ds-sponsored-fg)] uppercase tracking-wide",
+      },
+    },
+    defaultVariants: { variant: "neutral" },
+  },
+);
+
+export interface BadgeProps
+  extends HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {}
+
+export function Badge({ className, variant, children, ...props }: BadgeProps) {
+  return (
+    <span className={cn(badgeVariants({ variant }), className)} {...props}>
+      {variant === "sponsored" ? "Sponsored" : children}
+    </span>
+  );
+}
