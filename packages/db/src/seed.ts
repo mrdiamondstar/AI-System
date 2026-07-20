@@ -379,8 +379,59 @@ async function main() {
     create: { email: "editor@dstarix.local", name: "DStarix Editor", role: "ADMIN" },
   });
 
+  // Editorial collections (SEO + trust asset, doc 07 §4)
+  const entityIdBySlug = new Map<string, string>();
+  for (const e of await prisma.entity.findMany({ select: { id: true, slug: true } })) {
+    entityIdBySlug.set(e.slug, e.id);
+  }
+  const collections = [
+    {
+      slug: "best-ai-for-coding",
+      title: "Best AI Tools for Coding",
+      description: "The AI coding assistants and editors our editors actually recommend in 2026.",
+      items: ["claude-code", "cursor", "github-copilot", "claude"],
+    },
+    {
+      slug: "best-free-ai-tools",
+      title: "Best Free AI Tools",
+      description:
+        "Powerful AI tools with genuinely useful free tiers — start without a credit card.",
+      items: ["claude", "chatgpt", "gemini", "perplexity"],
+    },
+  ];
+  for (const collection of collections) {
+    const created = await prisma.collection.upsert({
+      where: { slug: collection.slug },
+      update: {
+        title: collection.title,
+        description: collection.description,
+        status: "PUBLISHED",
+        isEditorial: true,
+      },
+      create: {
+        slug: collection.slug,
+        title: collection.title,
+        description: collection.description,
+        status: "PUBLISHED",
+        isEditorial: true,
+      },
+    });
+    await prisma.collectionItem.deleteMany({ where: { collectionId: created.id } });
+    await prisma.collectionItem.createMany({
+      data: collection.items
+        .map((entitySlug, index) => ({
+          collectionId: created.id,
+          entityId: entityIdBySlug.get(entitySlug),
+          sortOrder: index,
+        }))
+        .filter((row): row is { collectionId: string; entityId: string; sortOrder: number } =>
+          Boolean(row.entityId),
+        ),
+    });
+  }
+
   console.log(
-    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 1 editor.`,
+    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 2 collections, 1 editor.`,
   );
 }
 

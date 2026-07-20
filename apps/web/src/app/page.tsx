@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { getNewEntities, getTopEntities, listCategories } from "@dstarix/catalog";
+import {
+  getNewEntities,
+  getTopEntities,
+  listCategories,
+  listPublishedCollections,
+} from "@dstarix/catalog";
 import { jsonLd, organization, webSite } from "@dstarix/seo";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@dstarix/ui";
 import { EntityCard } from "@/components/entity-card";
@@ -10,10 +15,11 @@ export const revalidate = 300;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export default async function HomePage() {
-  const [topEntities, newEntities, categories] = await Promise.all([
+  const [topEntities, newEntities, categories, collections] = await Promise.all([
     getTopEntities(6),
     getNewEntities(6),
     listCategories(),
+    listPublishedCollections(3),
   ]);
 
   const structuredData = jsonLd(organization(siteUrl), webSite(siteUrl));
@@ -39,6 +45,9 @@ export default async function HomePage() {
           <div className="flex items-center gap-6 text-sm">
             <Link href="/categories" className="text-muted-foreground hover:text-foreground">
               Categories
+            </Link>
+            <Link href="/collections" className="text-muted-foreground hover:text-foreground">
+              Collections
             </Link>
             <Link href="/advisor" className="text-muted-foreground hover:text-foreground">
               AI Advisor
@@ -108,6 +117,39 @@ export default async function HomePage() {
             <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {newEntities.map((entity) => (
                 <EntityCard key={entity.id} entity={entity} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Editorial collections */}
+        {collections.length > 0 ? (
+          <section aria-labelledby="collections-heading" className="mx-auto max-w-6xl px-6 py-10">
+            <div className="flex items-baseline justify-between">
+              <h2 id="collections-heading" className="text-xl font-semibold tracking-tight">
+                Editor collections
+              </h2>
+              <Link href="/collections" className="text-sm font-medium text-brand">
+                All collections →
+              </Link>
+            </div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {collections.map((collection) => (
+                <Link
+                  key={collection.slug}
+                  href={`/collections/${collection.slug}`}
+                  className="group block"
+                >
+                  <Card className="h-full group-hover:shadow-[var(--ds-shadow-md)]">
+                    <CardHeader>
+                      <CardTitle className="group-hover:text-brand">{collection.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="line-clamp-2">{collection.description}</p>
+                      <p className="mt-2 text-xs">{collection._count.items} tools</p>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </section>
