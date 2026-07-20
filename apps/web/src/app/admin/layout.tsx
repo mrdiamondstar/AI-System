@@ -14,6 +14,9 @@ const nav = [
   { href: "/admin/entities", label: "Entities" },
   { href: "/admin/reviews", label: "Moderation" },
   { href: "/admin/marketplace", label: "Marketplace" },
+  { href: "/admin/revenue", label: "Revenue" },
+  { href: "/admin/seo", label: "SEO" },
+  { href: "/admin/automation", label: "Automation" },
 ];
 
 /**

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { recordEvent } from "@dstarix/analytics";
 import { searchEntities } from "@dstarix/catalog";
 import { Badge, Card, CardContent, CardHeader, CardTitle, Input, Button } from "@dstarix/ui";
 import { DecisionScore } from "@/components/entity-card";
@@ -16,6 +17,16 @@ export default async function SearchPage({
 }) {
   const { q } = await searchParams;
   const results = q ? await searchEntities(q) : [];
+
+  // First-party search instrumentation (doc 07 §6): powers search-success rate
+  // and the admin content-gap report. Fire-and-forget; never blocks render.
+  if (q) {
+    recordEvent({
+      name: results.length === 0 ? "search_zero_results" : "search",
+      path: "/search",
+      meta: { query: q.slice(0, 100), results: results.length },
+    });
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -66,11 +77,15 @@ export default async function SearchPage({
           <div className="mt-8 rounded-[var(--ds-radius-lg)] border border-border p-6 text-sm text-muted-foreground">
             <p>No tools matched “{q}”.</p>
             <p className="mt-2">
-              Try a broader term, or{" "}
+              Describe your problem to the{" "}
+              <Link href={`/advisor?q=${encodeURIComponent(q)}`} className="font-medium text-brand">
+                AI Advisor
+              </Link>
+              , or{" "}
               <Link href="/categories" className="font-medium text-brand">
                 browse categories
-              </Link>{" "}
-              — the AI Advisor (coming in Phase 3) will handle problem descriptions like this one.
+              </Link>
+              .
             </p>
           </div>
         )

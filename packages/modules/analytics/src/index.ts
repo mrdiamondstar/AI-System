@@ -1,6 +1,16 @@
 import { prisma } from "@dstarix/db";
 import { scopedLogger } from "@dstarix/shared";
 
+export {
+  topZeroResultQueries,
+  eventCounts,
+  revenueSummary,
+  automationHealth,
+  type EventCount,
+  type RevenueSummary,
+  type AutomationHealth,
+} from "./reports";
+
 const log = scopedLogger("analytics");
 
 /**
