@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Faceted search permutations stay out of the index (doc 03 §4)
-        disallow: ["/search", "/api/", "/out/"],
+        disallow: ["/search", "/api/", "/out/", "/admin/", "/account"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

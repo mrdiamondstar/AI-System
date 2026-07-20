@@ -185,6 +185,9 @@ importers:
       '@dstarix/shared':
         specifier: workspace:*
         version: link:../../shared
+      zod:
+        specifier: ^4.1.0
+        version: 4.4.3
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

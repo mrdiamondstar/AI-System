@@ -1,6 +1,8 @@
 import { recordEvent } from "@dstarix/analytics";
 import { prisma } from "@dstarix/db";
 
+export { submitReview, listPendingReviews, moderateReview, type ReviewInput } from "./reviews";
+
 /**
  * Engagement module: bookmarks (Phase 2 habit loop). Collections and reviews
  * join this module next. Score aggregates (bookmark_count) are recomputed

@@ -11,6 +11,7 @@ import {
 import { breadcrumbList, jsonLd, softwareApplication } from "@dstarix/seo";
 import { Badge, Card, CardContent, CardHeader, CardTitle } from "@dstarix/ui";
 import { BookmarkButton } from "@/components/bookmark-button";
+import { ReviewForm } from "@/components/review-form";
 import { EntityCard, DecisionScore } from "@/components/entity-card";
 
 // ISR (doc 03 §2): pages regenerate every 5 min; event-driven on-demand
@@ -252,9 +253,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </ul>
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
-            No reviews yet. Reviews open to the community in Phase 2.
+            No reviews yet — be the first to share your experience.
           </p>
         )}
+        <ReviewForm entityId={entity.id} entitySlug={entity.slug} entityName={entity.name} />
       </section>
 
       {/* Alternatives */}

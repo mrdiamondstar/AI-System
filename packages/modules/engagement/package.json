@@ -12,7 +12,8 @@
   "dependencies": {
     "@dstarix/analytics": "workspace:*",
     "@dstarix/db": "workspace:*",
-    "@dstarix/shared": "workspace:*"
+    "@dstarix/shared": "workspace:*",
+    "zod": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
