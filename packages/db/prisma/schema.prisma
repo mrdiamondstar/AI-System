@@ -50,6 +50,8 @@ model User {
   subscriptions Subscription[]
   entitlements  Entitlement[]
   apiKeys       ApiKey[]
+  listings      MarketplaceListing[]
+  orders        MarketplaceOrder[]
 
   @@map("users")
 }
@@ -641,6 +643,98 @@ model ApiUsageDay {
 
   @@id([apiKeyId, day])
   @@map("api_usage_days")
+}
+
+// ---------------------------------------------------------------------------
+// Marketplace (doc 07 §2, Phase 4). Agents/prompts/templates commerce with a
+// double-entry ledger as the money truth. Listings pass editorial review
+// before publish (same trust bar as the catalog). Provider-agnostic like
+// payments (ADR-011); mock provider drives the full order flow until real
+// payout rails are configured.
+// ---------------------------------------------------------------------------
+
+enum MarketplaceListingType {
+  AGENT
+  PROMPT
+  TEMPLATE
+}
+
+enum MarketplaceListingStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+model MarketplaceListing {
+  id            String                   @id @default(uuid(7)) @db.Uuid
+  sellerId      String                   @map("seller_id") @db.Uuid
+  slug          String                   @unique
+  title         String
+  summary       String
+  type          MarketplaceListingType
+  status        MarketplaceListingStatus @default(DRAFT)
+  priceMinor    Int                      @map("price_minor") // 0 = free
+  currency      String                   @default("USD") @db.Char(3)
+  // Deliverable is released post-purchase; an R2 key for files, or inline text.
+  deliverableText String?                @map("deliverable_text")
+  deliverableKey  String?                @map("deliverable_key")
+  publishedAt   DateTime?                @map("published_at")
+  createdAt     DateTime                 @default(now()) @map("created_at")
+  updatedAt     DateTime                 @updatedAt @map("updated_at")
+
+  seller User               @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  orders MarketplaceOrder[]
+
+  @@index([status, type])
+  @@index([sellerId])
+  @@map("marketplace_listings")
+}
+
+model MarketplaceOrder {
+  id             String      @id @default(uuid(7)) @db.Uuid
+  listingId      String      @map("listing_id") @db.Uuid
+  buyerId        String      @map("buyer_id") @db.Uuid
+  provider       String // "razorpay" | "paddle" | "mock"
+  providerRef    String      @unique @map("provider_ref")
+  amountMinor    Int         @map("amount_minor")
+  platformFeeMinor Int       @map("platform_fee_minor")
+  currency       String      @default("USD") @db.Char(3)
+  status         OrderStatus @default(PENDING)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  paidAt         DateTime?   @map("paid_at")
+
+  listing MarketplaceListing @relation(fields: [listingId], references: [id])
+  buyer   User               @relation(fields: [buyerId], references: [id])
+  ledger  LedgerEntry[]
+
+  @@index([buyerId])
+  @@index([listingId])
+  @@map("marketplace_orders")
+}
+
+// Double-entry ledger: entries for one order must sum to zero. Accounts are
+// namespaced strings, e.g. "buyer:<id>", "seller:<id>", "platform:fees".
+model LedgerEntry {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  orderId     String   @map("order_id") @db.Uuid
+  account     String
+  amountMinor Int      @map("amount_minor") // signed: debit negative, credit positive
+  currency    String   @default("USD") @db.Char(3)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  order MarketplaceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([account])
+  @@index([orderId])
+  @@map("ledger_entries")
 }
 
 // ---------------------------------------------------------------------------

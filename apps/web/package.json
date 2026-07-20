@@ -21,6 +21,7 @@
     "@dstarix/identity": "workspace:*",
     "@dstarix/jobs": "workspace:*",
     "@dstarix/learning": "workspace:*",
+    "@dstarix/marketplace": "workspace:*",
     "@dstarix/notifications": "workspace:*",
     "@dstarix/payments": "workspace:*",
     "@dstarix/seo": "workspace:*",

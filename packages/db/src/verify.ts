@@ -63,6 +63,16 @@ async function main() {
   const jobs = await prisma.job.count({ where: { status: "PUBLISHED" } });
   if (jobs < 1) failures.push("expected at least one published job");
 
+  // Marketplace: a published listing + a coherent (zero-sum) ledger if any
+  // orders exist (double-entry integrity, doc 07 §2).
+  const listings = await prisma.marketplaceListing.count({ where: { status: "PUBLISHED" } });
+  if (listings < 1) failures.push("expected at least one published marketplace listing");
+
+  const ledgerImbalance = await prisma.ledgerEntry.aggregate({ _sum: { amountMinor: true } });
+  if ((ledgerImbalance._sum.amountMinor ?? 0) !== 0) {
+    failures.push("marketplace ledger does not balance to zero");
+  }
+
   if (failures.length > 0) {
     console.error("DB verification FAILED:\n - " + failures.join("\n - "));
     process.exitCode = 1;

@@ -53,6 +53,9 @@ importers:
       '@dstarix/learning':
         specifier: workspace:*
         version: link:../../packages/modules/learning
+      '@dstarix/marketplace':
+        specifier: workspace:*
+        version: link:../../packages/modules/marketplace
       '@dstarix/notifications':
         specifier: workspace:*
         version: link:../../packages/modules/notifications
@@ -330,6 +333,28 @@ importers:
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../db
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/marketplace:
+    dependencies:
+      '@dstarix/analytics':
+        specifier: workspace:*
+        version: link:../analytics
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
+      zod:
+        specifier: ^4.1.0
+        version: 4.4.3
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

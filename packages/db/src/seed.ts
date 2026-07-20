@@ -373,10 +373,30 @@ async function main() {
 
   // Editorial seed user (dev/CI only). Real accounts are created via Better
   // Auth; this exists so the admin surface and moderation flows have an actor.
-  await prisma.user.upsert({
+  const editor = await prisma.user.upsert({
     where: { email: "editor@dstarix.local" },
     update: { role: "ADMIN" },
     create: { email: "editor@dstarix.local", name: "DStarix Editor", role: "ADMIN" },
+  });
+
+  // Marketplace: one published listing so the marketplace surface + API render
+  // real data on a fresh database (doc 07 §2).
+  await prisma.marketplaceListing.upsert({
+    where: { slug: "senior-engineer-code-review-prompt" },
+    update: {},
+    create: {
+      slug: "senior-engineer-code-review-prompt",
+      sellerId: editor.id,
+      title: "Senior Engineer Code-Review Prompt Pack",
+      summary:
+        "A battle-tested set of prompts that turn any capable model into a rigorous senior code reviewer: security, performance, readability, and test-coverage passes with structured output.",
+      type: "PROMPT",
+      status: "PUBLISHED",
+      priceMinor: 900,
+      deliverableText:
+        "Prompt 1 — Security pass: ...\nPrompt 2 — Performance pass: ...\nPrompt 3 — Readability pass: ...",
+      publishedAt: new Date(),
+    },
   });
 
   // Editorial collections (SEO + trust asset, doc 07 §4)

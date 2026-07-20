@@ -13,6 +13,7 @@ const nav = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/entities", label: "Entities" },
   { href: "/admin/reviews", label: "Moderation" },
+  { href: "/admin/marketplace", label: "Marketplace" },
 ];
 
 /**

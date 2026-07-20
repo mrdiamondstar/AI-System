@@ -58,6 +58,9 @@ export default async function HomePage() {
             <Link href="/careers" className="text-muted-foreground hover:text-foreground">
               Careers
             </Link>
+            <Link href="/marketplace" className="text-muted-foreground hover:text-foreground">
+              Marketplace
+            </Link>
             <Link href="/pricing" className="text-muted-foreground hover:text-foreground">
               Pricing
             </Link>
