@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@dstarix/learning";
+import { getCourseBySlug, hasAssessment } from "@dstarix/learning";
 import { breadcrumbList, jsonLd } from "@dstarix/seo";
 import { Badge, Card, CardContent, CardHeader, CardTitle } from "@dstarix/ui";
 
@@ -29,6 +29,8 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
   const { course: courseSlug } = await params;
   const course = await getCourseBySlug(courseSlug);
   if (!course) notFound();
+
+  const assessmentAvailable = await hasAssessment(courseSlug);
 
   const structuredData = jsonLd(
     {
@@ -80,6 +82,23 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
           {course.lessons.length === 0 ? <p className="text-sm">Lessons coming soon.</p> : null}
         </CardContent>
       </Card>
+
+      {assessmentAvailable ? (
+        <div className="mt-6 flex items-center justify-between rounded-[var(--ds-radius-lg)] border border-border bg-surface p-5">
+          <div>
+            <p className="font-medium">Ready to prove it?</p>
+            <p className="text-sm text-muted-foreground">
+              Pass the assessment (70%+) to earn a verifiable certificate.
+            </p>
+          </div>
+          <Link
+            href={`/learn/${course.slug}/assessment`}
+            className="inline-flex h-10 items-center rounded-[var(--ds-radius-md)] bg-[var(--ds-brand)] px-4 text-sm font-medium text-[var(--ds-brand-foreground)]"
+          >
+            Take assessment
+          </Link>
+        </div>
+      ) : null}
     </main>
   );
 }

@@ -348,6 +348,9 @@ importers:
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

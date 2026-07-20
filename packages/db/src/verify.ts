@@ -79,6 +79,13 @@ async function main() {
   if (embeddingCount < entityCount) {
     failures.push(`expected an embedding per published entity (${embeddingCount}/${entityCount})`);
   }
+  // Certifications: the intro course has a gradeable assessment (doc 07 §3).
+  const assessmentQs = await prisma.assessmentQuestion.count({
+    where: { courseSlug: "getting-started-with-ai-tools" },
+  });
+  if (assessmentQs < 3)
+    failures.push("expected an assessment (>=3 questions) for the intro course");
+
   const nn = await prisma.$queryRaw<Array<{ id: string }>>`
     SELECT e.id FROM embeddings em
     JOIN entities e ON e.id = em.subject_id AND em.subject_kind = 'entity'

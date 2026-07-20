@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dstarix/db": "workspace:*"
+    "@dstarix/db": "workspace:*",
+    "@dstarix/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.7.0",

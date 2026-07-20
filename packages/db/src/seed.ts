@@ -527,6 +527,68 @@ async function main() {
     }
   }
 
+  // Course assessment (doc 07 §3): questions for the intro course so the
+  // certification flow works end-to-end on a fresh DB. answerIdx is the
+  // correct option index (server-only; never sent to the client).
+  const assessment = {
+    courseSlug: "getting-started-with-ai-tools",
+    questions: [
+      {
+        prompt: "What does DStarix's Decision Score primarily communicate?",
+        options: [
+          "How expensive a tool is",
+          "A composite of editorial, community, and data-quality signals",
+          "The number of users",
+          "The launch date",
+        ],
+        answerIdx: 1,
+      },
+      {
+        prompt: "What is the best first step when choosing an AI tool for a task?",
+        options: [
+          "Buy the most expensive option",
+          "Describe your problem to the AI Advisor or search by intent",
+          "Pick whatever is trending",
+          "Avoid reading reviews",
+        ],
+        answerIdx: 1,
+      },
+      {
+        prompt: "Why does DStarix show pros, cons, and alternatives on every tool page?",
+        options: [
+          "To fill space",
+          "To support a confident, well-rounded decision",
+          "To slow you down",
+          "For advertising only",
+        ],
+        answerIdx: 1,
+      },
+      {
+        prompt: "What should a trustworthy AI recommendation always include?",
+        options: [
+          "A reason explaining why it was suggested",
+          "Only a price",
+          "A countdown timer",
+          "Nothing extra",
+        ],
+        answerIdx: 0,
+      },
+    ],
+  };
+  // Reset then insert (idempotent) so re-seeding keeps a clean question set.
+  await prisma.assessmentQuestion.deleteMany({ where: { courseSlug: assessment.courseSlug } });
+  for (const [index, q] of assessment.questions.entries()) {
+    await prisma.assessmentQuestion.create({
+      data: {
+        courseSlug: assessment.courseSlug,
+        prompt: q.prompt,
+        options: q.options,
+        answerIdx: q.answerIdx,
+        sortOrder: index,
+      },
+    });
+  }
+
   // DStarix Careers — jobs (aggregated-style seed; company links shared graph)
   const jobs = [
     {
