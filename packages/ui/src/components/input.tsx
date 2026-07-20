@@ -7,10 +7,11 @@ export function Input({ className, ...props }: InputProps) {
   return (
     <input
       className={cn(
-        "h-10 w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface)] px-3",
+        "h-11 w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-strong)] bg-[var(--ds-surface)] px-3.5",
         "text-sm text-[var(--ds-foreground)] placeholder:text-[var(--ds-muted-foreground)]",
-        "outline-none transition-shadow duration-[var(--ds-duration-fast)]",
-        "focus-visible:ring-2 focus-visible:ring-[var(--ds-brand)] focus-visible:border-transparent",
+        "shadow-[var(--ds-shadow-sm)] outline-none",
+        "transition-[box-shadow,border-color] duration-[var(--ds-duration-fast)]",
+        "focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-[var(--ds-ring)]",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}

@@ -4,26 +4,30 @@ import { cn } from "../lib/cn";
 
 const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center gap-2 font-medium select-none",
+    "relative inline-flex items-center justify-center gap-2 font-medium select-none whitespace-nowrap",
     "rounded-[var(--ds-radius-md)] outline-none",
-    "transition-[background-color,border-color,box-shadow,transform] duration-[var(--ds-duration-fast)] ease-[var(--ds-ease)]",
-    "focus-visible:ring-2 focus-visible:ring-[var(--ds-brand)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ds-background)]",
+    "transition-[transform,box-shadow,background-color,border-color,opacity] duration-[var(--ds-duration-fast)] ease-[var(--ds-ease)]",
+    "focus-visible:ring-2 focus-visible:ring-[var(--ds-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ds-background)]",
     "disabled:pointer-events-none disabled:opacity-50",
-    "active:scale-[0.98]",
+    "active:scale-[0.97]",
   ],
   {
     variants: {
       variant: {
-        primary:
-          "bg-[var(--ds-brand)] text-[var(--ds-brand-foreground)] hover:bg-[var(--ds-brand-hover)] shadow-[var(--ds-shadow-sm)]",
+        primary: [
+          "text-[var(--ds-brand-foreground)] [background:var(--ds-gradient-brand)]",
+          "shadow-[var(--ds-shadow-sm)] hover:shadow-[var(--ds-glow)] hover:-translate-y-0.5",
+        ],
         secondary:
-          "bg-[var(--ds-surface)] text-[var(--ds-foreground)] border border-[var(--ds-border)] hover:bg-[var(--ds-surface-muted)]",
+          "bg-[var(--ds-surface)] text-[var(--ds-foreground)] border border-[var(--ds-border-strong)] hover:bg-[var(--ds-surface-muted)] hover:-translate-y-0.5 shadow-[var(--ds-shadow-sm)]",
         ghost: "text-[var(--ds-foreground)] hover:bg-[var(--ds-surface-muted)]",
+        outline:
+          "border border-[var(--ds-border-strong)] text-[var(--ds-foreground)] hover:border-[var(--ds-brand)] hover:text-[var(--ds-brand)]",
       },
       size: {
-        sm: "h-8 px-3 text-sm",
-        md: "h-10 px-4 text-sm",
-        lg: "h-12 px-6 text-base",
+        sm: "h-9 px-3.5 text-sm",
+        md: "h-11 px-5 text-sm",
+        lg: "h-[3.25rem] px-7 text-base",
       },
     },
     defaultVariants: {

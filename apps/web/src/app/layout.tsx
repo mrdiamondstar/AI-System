@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
+import { GeistSans } from "geist/font/sans";
 import { defaultLocale } from "@/i18n/config";
 import "./globals.css";
 
@@ -24,7 +25,12 @@ const themeScript = `try{if(window.matchMedia("(prefers-color-scheme: dark)").ma
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang={defaultLocale} suppressHydrationWarning>
+    <html
+      lang={defaultLocale}
+      className={GeistSans.variable}
+      style={{ ["--font-geist" as string]: GeistSans.style.fontFamily }}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
