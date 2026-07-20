@@ -10,6 +10,7 @@ import {
 } from "@dstarix/catalog";
 import { breadcrumbList, jsonLd, softwareApplication } from "@dstarix/seo";
 import { Badge, Card, CardContent, CardHeader, CardTitle } from "@dstarix/ui";
+import { BookmarkButton } from "@/components/bookmark-button";
 import { EntityCard, DecisionScore } from "@/components/entity-card";
 
 // ISR (doc 03 §2): pages regenerate every 5 min; event-driven on-demand
@@ -148,9 +149,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               <p className="mt-1 text-xs text-muted-foreground">Decision Score</p>
             </div>
           ) : null}
+          <BookmarkButton entityId={entity.id} entitySlug={entity.slug} />
           {entity.websiteUrl ? (
             <a
-              href={entity.affiliateUrl ?? entity.websiteUrl}
+              href={`/out/${entity.slug}`}
               rel="nofollow sponsored noopener"
               target="_blank"
               className="inline-flex h-11 items-center rounded-[var(--ds-radius-md)] bg-[var(--ds-brand)] px-5 text-sm font-medium text-[var(--ds-brand-foreground)] hover:bg-[var(--ds-brand-hover)]"

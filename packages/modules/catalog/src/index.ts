@@ -7,6 +7,7 @@ export {
   getTopEntities,
   getNewEntities,
   listPublishedSlugs,
+  getOutboundTarget,
   resolveSlugRedirect,
   type EntityCard,
 } from "./queries";

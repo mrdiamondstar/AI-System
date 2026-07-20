@@ -9,7 +9,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dstarix/analytics": "workspace:*",
     "@dstarix/catalog": "workspace:*",
+    "@dstarix/engagement": "workspace:*",
     "@dstarix/growth": "workspace:*",
     "@dstarix/identity": "workspace:*",
     "better-auth": "^1.3.0",

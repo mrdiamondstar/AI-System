@@ -457,6 +457,25 @@ model OutboxEvent {
 }
 
 // ---------------------------------------------------------------------------
+// Analytics — first-party event pipeline (doc 07 §6). Append-only; monthly
+// partitioning + ClickHouse offload land when volume demands (>~5M/day).
+// ---------------------------------------------------------------------------
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String
+  path      String?
+  entityId  String?  @map("entity_id") @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  meta      Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([name, createdAt])
+  @@index([entityId, name])
+  @@map("analytics_events")
+}
+
+// ---------------------------------------------------------------------------
 // Governance — audit log (doc 04 §5); append-only by convention
 // ---------------------------------------------------------------------------
 

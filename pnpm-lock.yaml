@@ -26,9 +26,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@dstarix/analytics':
+        specifier: workspace:*
+        version: link:../../packages/modules/analytics
       '@dstarix/catalog':
         specifier: workspace:*
         version: link:../../packages/modules/catalog
+      '@dstarix/engagement':
+        specifier: workspace:*
+        version: link:../../packages/modules/engagement
       '@dstarix/growth':
         specifier: workspace:*
         version: link:../../packages/modules/growth
@@ -133,6 +139,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/modules/analytics:
+    dependencies:
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/modules/catalog:
     dependencies:
       '@dstarix/db':
@@ -144,6 +166,25 @@ importers:
       zod:
         specifier: ^4.1.0
         version: 4.4.3
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/modules/engagement:
+    dependencies:
+      '@dstarix/analytics':
+        specifier: workspace:*
+        version: link:../analytics
+      '@dstarix/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@dstarix/shared':
+        specifier: workspace:*
+        version: link:../../shared
     devDependencies:
       '@types/node':
         specifier: ^24.7.0

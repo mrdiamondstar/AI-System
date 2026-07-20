@@ -136,6 +136,16 @@ export async function listPublishedSlugs(): Promise<Array<{ slug: string; update
   );
 }
 
+/** Outbound redirect target for /out/{slug} affiliate tracking (doc 01 §2). */
+export async function getOutboundTarget(slug: string) {
+  return withDatabase(null, async () =>
+    prisma.entity.findFirst({
+      where: { slug, status: PUBLISHED, deletedAt: null },
+      select: { id: true, websiteUrl: true, affiliateUrl: true },
+    }),
+  );
+}
+
 /** Slug 301 lookup (doc 03 §4). */
 export async function resolveSlugRedirect(kind: string, fromSlug: string) {
   return withDatabase(null, async () =>
