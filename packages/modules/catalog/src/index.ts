@@ -12,3 +12,4 @@ export {
   type EntityCard,
 } from "./queries";
 export { searchEntities, type SearchResult } from "./search";
+export { getComparisonPair, listComparisonPairs, type ComparisonEntity } from "./comparisons";

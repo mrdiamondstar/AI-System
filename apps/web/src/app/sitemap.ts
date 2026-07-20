@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { listCategories, listPublishedSlugs } from "@dstarix/catalog";
+import { listCategories, listComparisonPairs, listPublishedSlugs } from "@dstarix/catalog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -8,7 +8,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
  * file once the catalog passes ~10K URLs.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [entities, categories] = await Promise.all([listPublishedSlugs(), listCategories()]);
+  const [entities, categories, comparisons] = await Promise.all([
+    listPublishedSlugs(),
+    listCategories(),
+    listComparisonPairs(),
+  ]);
 
   return [
     { url: siteUrl, changeFrequency: "daily", priority: 1 },
@@ -23,6 +27,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: entity.updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.7,
+    })),
+    ...entities.map((entity) => ({
+      url: `${siteUrl}/tools/${entity.slug}/alternatives`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...comparisons.map((pair) => ({
+      url: `${siteUrl}/compare/${pair.a}-vs-${pair.b}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
     })),
   ];
 }

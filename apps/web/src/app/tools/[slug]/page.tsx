@@ -262,9 +262,17 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       {/* Alternatives */}
       {alternatives.length > 0 ? (
         <section aria-labelledby="alternatives-heading" className="mt-10">
-          <h2 id="alternatives-heading" className="text-lg font-semibold">
-            Alternatives to {entity.name}
-          </h2>
+          <div className="flex items-baseline justify-between">
+            <h2 id="alternatives-heading" className="text-lg font-semibold">
+              Alternatives to {entity.name}
+            </h2>
+            <Link
+              href={`/tools/${entity.slug}/alternatives`}
+              className="text-sm font-medium text-brand"
+            >
+              See all →
+            </Link>
+          </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {alternatives.map((alternative) => (
               <EntityCard key={alternative.id} entity={alternative} />
