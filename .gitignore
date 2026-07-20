@@ -17,6 +17,7 @@ packages/db/generated/
 
 # Logs & misc
 *.log
+*.tsbuildinfo
 .DS_Store
 Thumbs.db
 coverage/
