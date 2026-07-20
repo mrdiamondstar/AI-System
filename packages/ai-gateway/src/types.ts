@@ -24,3 +24,12 @@ export interface AiProvider {
   readonly name: string;
   complete(request: CompletionRequest): Promise<CompletionResult>;
 }
+
+/** Fixed embedding dimensionality — matches the pgvector column vector(1024). */
+export const EMBEDDING_DIMENSIONS = 1024;
+
+export interface EmbeddingProvider {
+  readonly name: string;
+  readonly dimensions: number;
+  embed(texts: string[]): Promise<number[][]>;
+}

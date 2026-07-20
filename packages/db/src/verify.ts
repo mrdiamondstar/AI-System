@@ -73,6 +73,21 @@ async function main() {
     failures.push("marketplace ledger does not balance to zero");
   }
 
+  // Semantic layer: every published entity is embedded, and pgvector nearest-
+  // neighbor search returns results (doc 06 §2).
+  const embeddingCount = await prisma.embedding.count({ where: { subjectKind: "entity" } });
+  if (embeddingCount < entityCount) {
+    failures.push(`expected an embedding per published entity (${embeddingCount}/${entityCount})`);
+  }
+  const nn = await prisma.$queryRaw<Array<{ id: string }>>`
+    SELECT e.id FROM embeddings em
+    JOIN entities e ON e.id = em.subject_id AND em.subject_kind = 'entity'
+    WHERE e.status = 'PUBLISHED'
+    ORDER BY em.vector <=> (SELECT vector FROM embeddings LIMIT 1)
+    LIMIT 3
+  `;
+  if (nn.length === 0) failures.push("pgvector semantic search returned no results");
+
   if (failures.length > 0) {
     console.error("DB verification FAILED:\n - " + failures.join("\n - "));
     process.exitCode = 1;

@@ -1,13 +1,23 @@
 import { scopedLogger } from "@dstarix/shared";
 import { AnthropicProvider } from "./anthropic";
 import { MockProvider } from "./mock";
-import type { AiProvider, CompletionRequest, CompletionResult } from "./types";
+import { MockEmbeddingProvider } from "./embeddings-mock";
+import { OpenAIEmbeddingProvider } from "./embeddings-openai";
+import {
+  EMBEDDING_DIMENSIONS,
+  type AiProvider,
+  type CompletionRequest,
+  type CompletionResult,
+  type EmbeddingProvider,
+} from "./types";
 
 export type { ChatMessage, CompletionRequest, CompletionResult } from "./types";
+export { EMBEDDING_DIMENSIONS } from "./types";
 
 const log = scopedLogger("ai-gateway");
 
 let provider: AiProvider | undefined;
+let embeddingProvider: EmbeddingProvider | undefined;
 
 function resolveProvider(): AiProvider {
   if (!provider) {
@@ -16,6 +26,27 @@ function resolveProvider(): AiProvider {
     log.info({ provider: provider.name }, "ai provider resolved");
   }
   return provider;
+}
+
+function resolveEmbeddingProvider(): EmbeddingProvider {
+  if (!embeddingProvider) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    embeddingProvider = apiKey ? new OpenAIEmbeddingProvider(apiKey) : new MockEmbeddingProvider();
+    log.info({ provider: embeddingProvider.name }, "embedding provider resolved");
+  }
+  return embeddingProvider;
+}
+
+/** Embed one text to a unit vector of EMBEDDING_DIMENSIONS (ADR-007). */
+export async function embed(text: string): Promise<number[]> {
+  const [vector] = await resolveEmbeddingProvider().embed([text]);
+  return vector ?? new Array<number>(EMBEDDING_DIMENSIONS).fill(0);
+}
+
+/** Batch embed (indexing path). */
+export async function embedBatch(texts: string[]): Promise<number[][]> {
+  if (texts.length === 0) return [];
+  return resolveEmbeddingProvider().embed(texts);
 }
 
 /**

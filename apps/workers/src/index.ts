@@ -1,6 +1,7 @@
 import { createQueue, jobs } from "@dstarix/queue";
 import { scopedLogger } from "@dstarix/shared";
 import { relayOutboxBatch } from "./outbox-relay";
+import { refreshEntityProjections } from "./projections";
 
 const log = scopedLogger("workers");
 
@@ -22,23 +23,18 @@ async function main() {
   await queue.send(jobs.outboxRelay, {});
 
   // Event consumers. Idempotent by construction (at-least-once delivery).
-  // Phase 1 keeps derived state in Postgres; when Meilisearch/embeddings land
-  // these handlers fan out to those projections behind the same events.
+  // Refresh derived projections (pgvector embedding now; Meilisearch index
+  // fans out from the same handler once provisioned).
+  const onEntityChange = async ({ payload }: { payload: { entityId?: string } }) => {
+    if (payload.entityId) await refreshEntityProjections(payload.entityId);
+  };
   await queue.work<{ topic: string; payload: { entityId?: string } }>(
     "event.tool.published.v1",
-    async ({ payload }) => {
-      if (payload.entityId) {
-        log.info({ entityId: payload.entityId }, "tool.published — projections would refresh here");
-      }
-    },
+    onEntityChange,
   );
   await queue.work<{ topic: string; payload: { entityId?: string } }>(
     "event.tool.updated.v1",
-    async ({ payload }) => {
-      if (payload.entityId) {
-        log.info({ entityId: payload.entityId }, "tool.updated — projections would refresh here");
-      }
-    },
+    onEntityChange,
   );
 
   const shutdown = async (signal: string) => {

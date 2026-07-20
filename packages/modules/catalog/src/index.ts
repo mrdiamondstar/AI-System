@@ -12,6 +12,7 @@ export {
   type EntityCard,
 } from "./queries";
 export { searchEntities, type SearchResult } from "./search";
+export { upsertEntityEmbedding, buildEntityEmbeddingText, semanticEntityIds } from "./embeddings";
 export { getComparisonPair, listComparisonPairs, type ComparisonEntity } from "./comparisons";
 export {
   listAdminEntities,

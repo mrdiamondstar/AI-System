@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dstarix/ai-gateway": "workspace:*",
     "@dstarix/db": "workspace:*",
     "@dstarix/shared": "workspace:*",
     "zod": "^4.1.0"

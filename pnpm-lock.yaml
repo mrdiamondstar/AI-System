@@ -117,6 +117,9 @@ importers:
 
   apps/workers:
     dependencies:
+      '@dstarix/catalog':
+        specifier: workspace:*
+        version: link:../../packages/modules/catalog
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -159,6 +162,9 @@ importers:
         specifier: ^6.16.0
         version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
     devDependencies:
+      '@dstarix/ai-gateway':
+        specifier: workspace:*
+        version: link:../ai-gateway
       '@types/node':
         specifier: ^24.7.0
         version: 24.13.3
@@ -238,6 +244,9 @@ importers:
 
   packages/modules/catalog:
     dependencies:
+      '@dstarix/ai-gateway':
+        specifier: workspace:*
+        version: link:../../ai-gateway
       '@dstarix/db':
         specifier: workspace:*
         version: link:../../db

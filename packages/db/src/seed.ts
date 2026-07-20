@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { embed } from "@dstarix/ai-gateway";
 import { prisma } from "./index";
 import type { EntityType, PricingModel } from "@prisma/client";
 
@@ -595,8 +597,29 @@ async function main() {
     });
   }
 
+  // Semantic layer (doc 06 §2): generate pgvector embeddings for every
+  // published entity so hybrid search + advisor have vectors on a fresh DB.
+  // Uses the ai-gateway embedder (mock without OPENAI_API_KEY) — no creds.
+  const published = await prisma.entity.findMany({
+    where: { status: "PUBLISHED", deletedAt: null },
+    select: { id: true, name: true, tagline: true, summary: true },
+  });
+  for (const entity of published) {
+    const text = [entity.name, entity.tagline ?? "", entity.summary ?? ""].join(" ").trim();
+    if (!text) continue;
+    const contentHash = createHash("sha256").update(text).digest("hex");
+    const vector = await embed(text);
+    const literal = `[${vector.map((v) => (Number.isFinite(v) ? v : 0)).join(",")}]`;
+    await prisma.$executeRaw`
+      INSERT INTO embeddings (id, subject_kind, subject_id, content_hash, vector, created_at)
+      VALUES (gen_random_uuid(), 'entity', ${entity.id}::uuid, ${contentHash}, ${literal}::vector, now())
+      ON CONFLICT (subject_kind, subject_id)
+      DO UPDATE SET content_hash = EXCLUDED.content_hash, vector = EXCLUDED.vector
+    `;
+  }
+
   console.log(
-    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, 2 collections, ${learnCourses.length} courses, ${jobs.length} jobs, 1 editor.`,
+    `Seed complete: ${categories.length} categories, ${companies.length} companies, ${entities.length} entities, ${published.length} embeddings, 2 collections, ${learnCourses.length} courses, ${jobs.length} jobs, 1 editor.`,
   );
 }
 

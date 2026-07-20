@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dstarix/catalog": "workspace:*",
     "@dstarix/db": "workspace:*",
     "@dstarix/events": "workspace:*",
     "@dstarix/queue": "workspace:*",
