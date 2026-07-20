@@ -23,3 +23,4 @@ Thumbs.db
 coverage/
 .vercel/
 .wrangler/
+.open-next/

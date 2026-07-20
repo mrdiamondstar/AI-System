@@ -1,0 +1,38 @@
+name: Deploy (Cloudflare Workers)
+
+# Manually triggered until real Cloudflare credentials are provisioned
+# (repo secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID; runtime
+# secrets via `wrangler secret put`: DATABASE_URL, BETTER_AUTH_SECRET,
+# ANTHROPIC_API_KEY). Then this can move to push-on-main.
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Build for Cloudflare (OpenNext)
+        working-directory: apps/web
+        run: pnpm build:cf
+
+      - name: Deploy
+        working-directory: apps/web
+        run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

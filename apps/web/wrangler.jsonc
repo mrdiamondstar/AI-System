@@ -1,0 +1,22 @@
+// Cloudflare Workers deployment (ADR-008: OpenNext adapter).
+// Activates once the founder provides real credentials:
+//   1. `wrangler login` locally, or CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID in GitHub secrets
+//   2. Set runtime secrets: wrangler secret put DATABASE_URL / BETTER_AUTH_SECRET / ANTHROPIC_API_KEY
+//   3. Deploy: pnpm deploy:cf (or the deploy.yml workflow)
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dstarix-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "vars": {
+    "NODE_ENV": "production",
+  },
+}

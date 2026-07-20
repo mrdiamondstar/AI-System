@@ -40,6 +40,9 @@ export default async function HomePage() {
             <Link href="/categories" className="text-muted-foreground hover:text-foreground">
               Categories
             </Link>
+            <Link href="/advisor" className="text-muted-foreground hover:text-foreground">
+              AI Advisor
+            </Link>
             <Link href="/search" className="text-muted-foreground hover:text-foreground">
               Search
             </Link>
